@@ -16,10 +16,10 @@ let tokenize str =
     else
       match str.[i] with
       | '(' | ')' as par->
-        if start_ind <= i then
+        if start_ind < i then
           token (i + 1) (i + 1) ( char_to_string par :: (cut_out str start_ind (i - 1)  :: res ) )
         else
-          token (i + 1) (i + 1) res
+          token (i + 1) (i + 1) ( char_to_string par :: res)
       | ' ' ->
         if start_ind < i then
           token (i + 1) (i + 1) (cut_out str start_ind (i - 1) :: res)
