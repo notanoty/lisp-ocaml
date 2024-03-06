@@ -18,6 +18,7 @@
 (package
  (name language)
  (synopsis "A short synopsis")
+ (allow_empty true)
  (description "A longer description")
  (depends ocaml dune)
  (tags
