@@ -2,7 +2,7 @@
 
 open Language.Peano
 open Language.Tokenize
-
+open Language.Rutalg
 
 
 let () =
@@ -22,9 +22,10 @@ let () =
   Printf.printf "5 < 3 = %b\n" (less five_peano three_peano);
   Printf.printf "5 = 3 = %b\n\n" (eq five_peano three_peano);
   
-  let example = "(l   a b c d)" in
+  let example = "( A + ( B * C) )" in
   let tokens = tokenize example in
-  List.iter (Printf.printf "'%s' ") tokens; print_newline ()
+  let rutaltest = rutal tokens in
+  List.iter (Printf.printf "'%d' ") rutaltest; print_newline ()
     
 
 

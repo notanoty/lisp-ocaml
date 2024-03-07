@@ -3,5 +3,8 @@
 (** @canonical Language.Peano *)
 module Peano = Language__Peano
 
+(** @canonical Language.Rutalg *)
+module Rutalg = Language__Rutalg
+
 (** @canonical Language.Tokenize *)
 module Tokenize = Language__Tokenize
