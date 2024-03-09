@@ -1,14 +1,13 @@
 [@@@ocaml.warning "-32"]
 
-open Language.Peano
-open Language.Tokenize
+open Peano
+(* open Tokenize *)
+open Parsing 
 (* open Language.Rutalg *)
 
 
 let test = S_expr ((String "+"), (S_expr ((Int 1), (S_expr (Int 1, Int 1) )) ));;  
 
-let string_to_sexpr str =
-  list_string_to_exp (tokenize str);;
  
 
 let () =
@@ -27,9 +26,9 @@ let () =
   Printf.printf "5 < 3 = %b\n" (less five_peano three_peano);
   Printf.printf "5 = 3 = %b\n\n" (eq five_peano three_peano);
 
-  let example = "( + ( C   D  ) ( *  B  C ) )" in
-                 1 1 2 -1 -1  2 2 -1 2  2 2 1
-  print_exp_par (string_to_sexpr example);; 
+  let example = "( + ( C   D  ) ( * B  C ) )" in
+                 (* 1 1 2 -1 -1  2 2 -1 2  2 2 1 *)
+   print_exsprassion (string_to_sexpr example);; 
 (* [ [ + A [ * B C ] ] ]  *)
 
 

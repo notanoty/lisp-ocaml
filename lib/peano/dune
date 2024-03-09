@@ -1,0 +1,3 @@
+(library
+ (name peano)
+ (public_name language.peano))
