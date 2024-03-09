@@ -4,6 +4,7 @@ type peano_number = Zero | Successor of peano_number;;
 
 
 type sexpr = 
+    | Nil 
     | Int of int
     | String of string
     | S_expr of sexpr * sexpr;;
@@ -13,9 +14,11 @@ let exp = S_expr (S_expr( (Int 10), (S_expr ((String "test") , (Int 1) ) ) ), S_
 let test = S_expr ((String "+"), (S_expr ((Int 1), (Int 1)) ));;  
  (* поддержка под выражений  *)
 
+
+(* (1 2 3 4) (1 . (2 . (3 . (4 . nil)))) *)
+
 let rec print_exp_par =  function
-
-
+        | Nil -> Printf.printf "Nil"
         | Int x -> Printf.printf "%d " x 
         | String x ->  Printf.printf "%s " x        
         | S_expr (x, (S_expr (y,z ) )) ->   
@@ -23,6 +26,11 @@ let rec print_exp_par =  function
                             print_exp_par x;
                             print_exp (S_expr (y,z));
                             Printf.printf ") "
+        | S_expr (x,  Nil) ->  
+                            Printf.printf "( ";
+                            print_exp_par x;
+                            Printf.printf ") "
+
         | S_expr (x,  y) ->  
                             Printf.printf "( ";
                             print_exp_par x;
@@ -31,11 +39,14 @@ let rec print_exp_par =  function
                             Printf.printf ") "
 
    and print_exp = function
+        | Nil -> Printf.printf "test "
         | Int x -> Printf.printf "%d " x 
         | String x ->  Printf.printf "%s " x
         | S_expr (x, (S_expr (y, z)) ) ->  
                             print_exp_par x;
                             print_exp (S_expr (y,z))
+        | S_expr (x,  Nil) ->  
+                            print_exp_par x;
         | S_expr (x, y) ->  
                             print_exp_par x;
                             Printf.printf ". ";
@@ -43,14 +54,19 @@ let rec print_exp_par =  function
 
 
 let rec exp_to_string = function
+        | Nil -> "Nil "
         | Int x -> Printf.sprintf "%d " x 
         | String x ->  Printf.sprintf "%s " x
         | S_expr (x, (S_expr (y,z ) )) ->   "( " ^ exp_to_string x ^ exp_to_string_no_par (S_expr (y,z)) ^ ") "
+        | S_expr (x,  Nil) ->  "( " ^ exp_to_string x ^ ") "
         | S_expr (x,  y) ->  "( " ^ exp_to_string x ^ ". " ^ exp_to_string_no_par y ^ ") "
+        
         and  exp_to_string_no_par = function
+        | Nil -> "Nil "
         | Int x -> Printf.sprintf "%d " x 
         | String x ->  Printf.sprintf "%s " x
         | S_expr (x, (S_expr (y,z ) )) ->  exp_to_string x ^ exp_to_string_no_par (S_expr (y,z)) 
+        | S_expr (x,  Nil) ->  exp_to_string x 
         | S_expr (x,  y) ->  exp_to_string x ^ ". " ^ exp_to_string_no_par y ;;      
 
 let rec peano_to_int = function
@@ -95,5 +111,13 @@ let rec eq x y =
     | Successor x, Successor y -> eq x y;;
 
 
+let rec list_string_to_exp list = 
+    match list with
+    | [] -> Nil
+    | hd::[] -> S_expr ((String hd),  Nil)
+    | hd::tail -> S_expr ((String hd),  list_string_to_exp tail)
 
+(*  ("aasdas ", "bbbb". "cccc") *)
 
+ (* S_expr (String "aasdas", (S_expr (String "bbbb",  Nil *)
+  (* (S_expr  (String "cccc", nil))) *)

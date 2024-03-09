@@ -2,11 +2,16 @@
 
 open Language.Peano
 open Language.Tokenize
-open Language.Rutalg
+(* open Language.Rutalg *)
 
+
+let test = S_expr ((String "+"), (S_expr ((Int 1), (S_expr (Int 1, Int 1) )) ));;  
+
+let string_to_sexpr str =
+  list_string_to_exp (tokenize str);;
+ 
 
 let () =
-  
   Printf.printf "Testing Peano Numbers:\n";
 
   let five_peano = int_to_peano 5 in
@@ -16,17 +21,15 @@ let () =
   Printf.printf "5 + 3 = %d\n" (peano_to_int sum);
 
   let diff = sub five_peano three_peano in
-  Printf.printf "5 - 3 = %d\n" (peano_to_int diff);
 
+  Printf.printf "5 - 3 = %d\n" (peano_to_int diff);
   Printf.printf "5 > 3 = %b\n" (greater five_peano three_peano);
   Printf.printf "5 < 3 = %b\n" (less five_peano three_peano);
   Printf.printf "5 = 3 = %b\n\n" (eq five_peano three_peano);
-  
-  let example = "( A + ( B * C) )" in
-  let tokens = tokenize example in
-  let rutaltest = rutal tokens in
-  List.iter (Printf.printf "'%d' ") rutaltest; print_newline ()
-    
+
+  let example = "( Aa +( B * C) )" in
+
+  print_exp_par (string_to_sexpr example);; 
 
 
 
@@ -47,17 +50,7 @@ let () =
         (*                     Printf.printf ". "; *)
         (*                     print_exp (String y ); *)
         (**)
-
-
-
-(* let three = Successor (Successor (Successor Zero)) *)
-
-(* let (&&) x y = *)
-(*   match (x, y) with *)
-(*   | true, true -> true *)
-(*   | _, _ -> false;; *)
-
-
+(* let three = Successor (Successor (Successor Zero)) *) (* let (&&) x y = *) (*   match (x, y) with *) (*   | true, true -> true *) (*   | _, _ -> false;; *)
 
 
 (* [@@@ocaml.warning "-27"] *)
