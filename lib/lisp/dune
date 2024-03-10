@@ -1,0 +1,4 @@
+(library
+ (name mylisp)
+ (public_name language.mylisp)
+ (libraries peano tokenize) )

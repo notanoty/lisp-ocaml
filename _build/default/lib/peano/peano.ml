@@ -53,6 +53,31 @@ let print_exsprassion exsprassion =
   print_exp_par exsprassion ;
   Printf.printf "\n";;
 
+let print_exsprassion_full exsprassion =
+  let rec print_exp_par =  function
+          | Nil -> Printf.printf "Nil"
+          | Int x -> Printf.printf "(Int %d )" x 
+          | String x ->  Printf.printf "(String '%s') " x        
+          | S_expr (x, (S_expr (y,z ) )) ->   
+                              Printf.printf "(S_expr ";
+                              print_exp_par x;
+                              print_exp_par (S_expr (y,z));
+                              Printf.printf ") "
+          | S_expr (x,  Nil) ->  
+                              Printf.printf "(S_expr ";
+                              print_exp_par x;
+                              Printf.printf ") "
+
+          | S_expr (x,  y) ->  
+                              Printf.printf "(S_expr ";
+                              print_exp_par x;
+                              Printf.printf ". ";
+                              print_exp_par y ;
+                              Printf.printf ") ";
+      in
+  print_exp_par exsprassion ;
+  Printf.printf "\n";;
+
 
 let rec exp_to_string = function
         | Nil -> "Nil "

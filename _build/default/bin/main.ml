@@ -1,14 +1,23 @@
 [@@@ocaml.warning "-32"]
+[@@@ocaml.warning "-33"]
 
 open Peano
-(* open Tokenize *)
-open Parsing 
+open Tokenize 
+(* open Parsing  *)
+open Mylisp
+
 (* open Language.Rutalg *)
+(* exception Error of string *)
+
+let rec conc ls1 ls2 = 
+  match (ls1, ls2) with
+  | ([], ls2) -> ls2
+  | ( (hd :: tail), ls2 ) -> (  conc tail  (hd::ls2) )
 
 
-let test = S_expr ((String "+"), (S_expr ((Int 1), (S_expr (Int 1, Int 1) )) ));;  
+let test = S_expr ((String "+"), (S_expr ((Int 7), (S_expr (Int 1, Nil) )) ));;  
 
- 
+let nil_test = S_expr ( Nil, Nil);; 
 
 let () =
   Printf.printf "Testing Peano Numbers:\n";
@@ -26,9 +35,19 @@ let () =
   Printf.printf "5 < 3 = %b\n" (less five_peano three_peano);
   Printf.printf "5 = 3 = %b\n\n" (eq five_peano three_peano);
 
-  let example = "( + ( C   D  ) ( * B  C ) )" in
+  print_exsprassion_full (eval nil_test);
+
+
+(* let example = "( +  C   D )" in *)
                  (* 1 1 2 -1 -1  2 2 -1 2  2 2 1 *)
-   print_exsprassion (string_to_sexpr example);; 
+  
+  (* List.iter (Printf.printf "'%s' ") (tokenize example) ; print_newline ();  *)
+  (* List.iter (Printf.printf "'%d' ") (rutal (tokenize example)); print_newline (); *)
+  (* print_exsprassion_full (string_to_sexpr example); *)
+  (* Printf.printf "Max = %d" (find_max_int (rutal (tokenize example)));;  *)
+
+
+
 (* [ [ + A [ * B C ] ] ]  *)
 
 
