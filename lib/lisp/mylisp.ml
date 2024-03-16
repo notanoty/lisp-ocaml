@@ -8,13 +8,13 @@ open Tokenize
 exception WrongVariable of string
 exception WrongOperation of string
 
-let get_number number = 
-  match number with
+
+let get_number: sexpr -> int = function
   | Int x -> x
   | _ -> raise (WrongVariable "Parameter should be of type Int a ");;
 
-let rec eval exp = 
-  match exp with
+
+let rec eval: sexpr -> sexpr = function
   | Nil ->raise (WrongVariable "Variable cannot be Nil")
   | Int x-> Int x
   | String _ -> raise (WrongVariable "Variable cannot be Nil")

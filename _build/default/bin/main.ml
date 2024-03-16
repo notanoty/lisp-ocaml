@@ -3,7 +3,7 @@
 
 open Peano
 open Tokenize 
-(* open Parsing  *)
+open Parsing 
 open Mylisp
 
 (* open Language.Rutalg *)
@@ -12,7 +12,8 @@ open Mylisp
 let rec conc ls1 ls2 = 
   match (ls1, ls2) with
   | ([], ls2) -> ls2
-  | ( (hd :: tail), ls2 ) -> (  conc tail  (hd::ls2) )
+  | ( (hd :: tail), ls2 ) -> hd ::(  conc tail  (ls2) )
+
 
 
 let test = S_expr ((String "+"), (S_expr ((Int 7), (S_expr (Int 1, Nil) )) ));;  
@@ -35,16 +36,25 @@ let () =
   Printf.printf "5 < 3 = %b\n" (less five_peano three_peano);
   Printf.printf "5 = 3 = %b\n\n" (eq five_peano three_peano);
 
-  print_exsprassion_full (eval nil_test);
+  (* let a = [1;2;3;4] in  *)
+  (* let b = [5;6;7;8] in *)
+  (* List.iter (Printf.printf "'%d' ") (conc a b); *)
+  (* print_exsprassion_full (eval nil_test); *)
 
 
-(* let example = "( +  C   D )" in *)
+
+let example = "( 1 ( 2  3  4 5  ) b a ) " in
                  (* 1 1 2 -1 -1  2 2 -1 2  2 2 1 *)
-  
-  (* List.iter (Printf.printf "'%s' ") (tokenize example) ; print_newline ();  *)
+    Printf.printf "exp %s\n" example;
+    let depth_list  = (rutal ( tokenize example) ) in 
+    let (a, _)  = parsing (string_to_sexpr example)  depth_list in
+    print_exsprassion_full a;
+    print_exsprassion a;
+
+
+(* Printf.printf "Max = %d" (find_max_int (rutal (tokenize example)));;  *)
   (* List.iter (Printf.printf "'%d' ") (rutal (tokenize example)); print_newline (); *)
-  (* print_exsprassion_full (string_to_sexpr example); *)
-  (* Printf.printf "Max = %d" (find_max_int (rutal (tokenize example)));;  *)
+  (* List.iter (Printf.printf "'%s' ") (tokenize example) ; print_newline ();  *)
 
 
 

@@ -18,7 +18,7 @@ let print_exsprassion exsprassion =
   let rec print_exp_par =  function
           | Nil -> Printf.printf "Nil"
           | Int x -> Printf.printf "%d " x 
-          | String x ->  Printf.printf "%s " x        
+          | String x ->  Printf.printf "'%s' " x        
           | S_expr (x, (S_expr (y,z ) )) ->   
                               Printf.printf "( ";
                               print_exp_par x;
@@ -39,7 +39,7 @@ let print_exsprassion exsprassion =
      and print_exp = function
           | Nil -> Printf.printf "test "
           | Int x -> Printf.printf "%d " x 
-          | String x ->  Printf.printf "%s " x
+          | String x ->  Printf.printf "'%s' " x
           | S_expr (x, (S_expr (y, z)) ) ->  
                               print_exp_par x;
                               print_exp (S_expr (y,z))
@@ -56,22 +56,19 @@ let print_exsprassion exsprassion =
 let print_exsprassion_full exsprassion =
   let rec print_exp_par =  function
           | Nil -> Printf.printf "Nil"
-          | Int x -> Printf.printf "(Int %d )" x 
-          | String x ->  Printf.printf "(String '%s') " x        
-          | S_expr (x, (S_expr (y,z ) )) ->   
-                              Printf.printf "(S_expr ";
+          | Int x -> Printf.printf "Int %d " x 
+          | String x ->  Printf.printf "String \"%s\" " x
+          | S_expr (x, ( S_expr (y, z) )) ->  
+                              Printf.printf "S_expr (";
+                              Printf.printf "(";
                               print_exp_par x;
-                              print_exp_par (S_expr (y,z));
-                              Printf.printf ") "
-          | S_expr (x,  Nil) ->  
-                              Printf.printf "(S_expr ";
-                              print_exp_par x;
-                              Printf.printf ") "
-
+                              Printf.printf "), (";
+                              print_exp_par ( S_expr (y, z) ) ;
+                              Printf.printf ")) ";
           | S_expr (x,  y) ->  
-                              Printf.printf "(S_expr ";
+                              Printf.printf "S_expr (";
                               print_exp_par x;
-                              Printf.printf ". ";
+                              Printf.printf ", ";
                               print_exp_par y ;
                               Printf.printf ") ";
       in
@@ -82,7 +79,7 @@ let print_exsprassion_full exsprassion =
 let rec exp_to_string = function
         | Nil -> "Nil "
         | Int x -> Printf.sprintf "%d " x 
-        | String x ->  Printf.sprintf "%s " x
+        | String x ->  Printf.sprintf "\"%s\" " x
         | S_expr (x, (S_expr (y,z ) )) ->   "( " ^ exp_to_string x ^ exp_to_string_no_par (S_expr (y,z)) ^ ") "
         | S_expr (x,  Nil) ->  "( " ^ exp_to_string x ^ ") "
         | S_expr (x,  y) ->  "( " ^ exp_to_string x ^ ". " ^ exp_to_string_no_par y ^ ") "
@@ -90,7 +87,7 @@ let rec exp_to_string = function
         and  exp_to_string_no_par = function
         | Nil -> "Nil "
         | Int x -> Printf.sprintf "%d " x 
-        | String x ->  Printf.sprintf "%s " x
+        | String x ->  Printf.sprintf "\"%s\" " x
         | S_expr (x, (S_expr (y,z ) )) ->  exp_to_string x ^ exp_to_string_no_par (S_expr (y,z)) 
         | S_expr (x,  Nil) ->  exp_to_string x 
         | S_expr (x,  y) ->  exp_to_string x ^ ". " ^ exp_to_string_no_par y ;;      
