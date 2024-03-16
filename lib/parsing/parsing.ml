@@ -42,18 +42,26 @@ let rutal list =
   rutishauser_algorithm 0 0;; 
 
 
+let strint_to_expr_int = function
+  | String s -> (
+      match int_of_string_opt s with
+      | Some i -> Int i
+      | None -> String s
+    )
+  | x -> x
+
 let reverse_expression2 exp  = 
   
   let rec rev exspression  new_expr = 
     match exspression  with
-    | Nil -> new_expr 
+    | Nil -> new_expr
+    
     | String x -> String x
     | Int x  -> Int x
     | S_expr (head_expr, tail_expr) ->  
-      rev tail_expr ( S_expr (head_expr, new_expr) ) 
+      rev tail_expr ( S_expr ( (strint_to_expr_int head_expr), new_expr) ) 
   in
    rev exp Nil  
-
 
 let rec build_list current_expr current_depths expr_accumulator depth_accumulator new_expr max_depth= 
     (* Printf.printf "build_list - "; *)

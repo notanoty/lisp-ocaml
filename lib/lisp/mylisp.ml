@@ -20,6 +20,8 @@ let rec eval: sexpr -> sexpr = function
   | String _ -> raise (WrongVariable "Variable cannot be Nil")
   | S_expr( (String "+"),S_expr ((Int x), (S_expr (Int y, Nil)))) ->
       Int (get_number (eval (Int x)) + get_number (eval (Int y)))
-  | _ -> raise (WrongOperation "Error wrong exp");;
+  | S_expr( (String "-"),S_expr ((Int x), (S_expr (Int y, Nil)))) ->
+      Int (get_number (eval (Int x)) - get_number (eval (Int y)))
+| _ -> raise (WrongOperation "Error wrong exp");;
 
 (* car, cdr, list, quote, if, cond, cons, null *)
