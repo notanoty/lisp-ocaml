@@ -43,11 +43,14 @@ let () =
 
 
 
-let example = "( 1 ( 1 1 1 2 3  4)  (5  b) a ) " in
+(* let example = "(if  (null (list ) ) ( + 100 1) 2  ) " in *)
+let example = "(quote (+ 1 2)) " in
                  (* 1 1 2 -1 -1  2 2 -1 2  2 2 1 *)
-    let  a   = parsing example in
-    print_exsprassion_full a;
+    let  a = parsing example in
     print_exsprassion a;
+    print_exsprassion_full (eval a);
+    (* print_exsprassion_full a; *)
+    print_exsprassion (eval a);
 
 (* Printf.printf "Max = %d" (find_max_int (rutal (tokenize example)));;  *)
   (* List.iter (Printf.printf "'%d' ") (rutal (tokenize example)); print_newline (); *)
