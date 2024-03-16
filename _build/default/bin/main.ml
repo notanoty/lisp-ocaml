@@ -43,14 +43,11 @@ let () =
 
 
 
-let example = "( 1 ( 2  3  4 5  ) b a ) " in
+let example = "( 1 (2 3  4)  (5  b) a ) " in
                  (* 1 1 2 -1 -1  2 2 -1 2  2 2 1 *)
-    Printf.printf "exp %s\n" example;
-    let depth_list  = (rutal ( tokenize example) ) in 
-    let (a, _)  = parsing (string_to_sexpr example)  depth_list in
+    let  a   = parsing example in
     print_exsprassion_full a;
     print_exsprassion a;
-
 
 (* Printf.printf "Max = %d" (find_max_int (rutal (tokenize example)));;  *)
   (* List.iter (Printf.printf "'%d' ") (rutal (tokenize example)); print_newline (); *)

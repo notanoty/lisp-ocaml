@@ -55,55 +55,56 @@ let reverse_expression2 exp  =
    rev exp Nil  
 
 
-let rec build_list2 current_expr current_depths expr_accumulator depth_accumulator new_expr max_depth= 
-    Printf.printf "build_list - ";
-    print_exsprassion_full current_expr;
+let rec build_list current_expr current_depths expr_accumulator depth_accumulator new_expr max_depth= 
+    (* Printf.printf "build_list - "; *)
+    (* print_exsprassion_full current_expr; *)
     match (current_expr, current_depths) with  
       | (_, []) -> raise (LispError "Parenthesis are not closed")
       | (S_expr (head_expr, tail_expr), (current_depth :: tail_depths)) ->
           if current_depth = max_depth then
-             ( S_expr (reverse_expression2 new_expr ,expr_accumulator))
+             ( tail_expr,  reverse_expression2 new_expr , -1::tail_depths)
           else
-            build_list2 tail_expr tail_depths expr_accumulator depth_accumulator ( S_expr (head_expr, new_expr)) max_depth  
+            build_list tail_expr tail_depths expr_accumulator depth_accumulator ( S_expr (head_expr, new_expr)) max_depth  
       | _ -> raise (WrongVariable "This expression cannot be supported")
  
 
 
 
 
- let parsing expression_list list_depth =
+ let parsing_par expression_list list_depth =
   let max_depth = find_max_int list_depth in
   let rec build_expression current_expr current_depths expr_accumulator depth_accumulator = 
-    Printf.printf "build_expression - ";
-    print_exsprassion_full current_expr;
+    (* Printf.printf "build_expression - "; *)
+    (* print_exsprassion_full current_expr; *)
     match (current_expr, current_depths) with
     | (_, []) -> (expr_accumulator, depth_accumulator)
+    | (Nil, _) -> (expr_accumulator, depth_accumulator)
     | (S_expr (head_expr, tail_expr), (current_depth :: tail_depths)) ->
         if current_depth = max_depth then
-            build_list tail_expr tail_depths expr_accumulator depth_accumulator Nil
+            let (new_tail, new_expr_accumulator, new_depth_accumulator) = build_list tail_expr tail_depths expr_accumulator depth_accumulator Nil max_depth in
+            build_expression Nil new_depth_accumulator (S_expr (new_expr_accumulator, new_tail)) new_depth_accumulator
         else
             let (new_expr_accumulator, new_depth_accumulator) = build_expression tail_expr tail_depths expr_accumulator depth_accumulator  in
             (S_expr (head_expr, new_expr_accumulator), current_depth :: new_depth_accumulator )
     | _ -> raise (WrongVariable "This expression cannot be supported")
 
-
-  and build_list current_expr current_depths expr_accumulator depth_accumulator new_expr= 
-    Printf.printf "build_list - ";
-    print_exsprassion_full current_expr;
-    match (current_expr, current_depths) with  
-      | (_, []) -> raise (LispError "Parenthesis are not closed")
-      | (S_expr (head_expr, tail_expr), (current_depth :: tail_depths)) ->
-          if current_depth = max_depth then
-            build_expression tail_expr tail_depths   ( S_expr (reverse_expression2 new_expr ,expr_accumulator))  depth_accumulator
-          else
-            build_list tail_expr tail_depths expr_accumulator depth_accumulator ( S_expr (head_expr, new_expr))  
-      | _ -> raise (WrongVariable "This expression cannot be supported")
- 
-  in
+ in
   build_expression expression_list list_depth Nil []
 
 
-
+let parsing exspression = 
+    let depth_list  = (rutal ( tokenize exspression) ) in 
+    let rec parsing_rec expression_list list_depth  =
+      match list_depth with
+      | [-1] -> expression_list
+      | _ ->
+      let (new_exspression, new_depth) = parsing_par expression_list list_depth in
+        parsing_rec new_exspression new_depth
+    in
+  let res_expression = parsing_rec (string_to_sexpr exspression) depth_list  in
+  match res_expression with
+  | S_expr (x , _) -> x
+  | x -> x
 
 (* (+ 1 2 . 4) *)
 
