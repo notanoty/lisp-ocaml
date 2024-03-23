@@ -20,6 +20,10 @@ let test = S_expr ((String "+"), (S_expr ((Int 7), (S_expr (Int 1, Nil) )) ));;
 
 let nil_test = S_expr ( Nil, Nil);; 
 
+let array = [1;2;3;4];;
+
+
+
 let () =
   Printf.printf "Testing Peano Numbers:\n";
 
@@ -42,10 +46,11 @@ let () =
   (* print_exsprassion_full (eval nil_test); *)
 
 
-
+  (* (List) -> (Nil, Nil)*)
 (* let example = "(if  (null (list ) ) ( + 100 1) 2  ) " in *)
-let example = "(quote (+ 1 2)) " in
+(* let example = "(cond ( (null (list)) (+ 1 2)) ( t (list 2 3 4 5)) ) " in   *)
                  (* 1 1 2 -1 -1  2 2 -1 2  2 2 1 *)
+let example = "( cond ( (null (list  1 2 3 )) (+ 1 1) ) ( (null (list )) 5  )  (t 0) ) " in  
     let  a = parsing example in
     print_exsprassion a;
     print_exsprassion_full (eval a);

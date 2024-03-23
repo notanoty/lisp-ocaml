@@ -50,6 +50,19 @@ let strint_to_expr_int = function
     )
   | x -> x
 
+(* ((x . 1) (y . 2)) *)
+(* lookup z ->?  *)
+(* EAFP *)
+(*     d={'x':1,'y':2} *)
+(* try: *)
+(*     d['z'] *)
+(* except KeyError: ... *)
+(**)
+(* LBYL *)
+(* if 'z' in d:  *)
+(*         d['z'] *)
+(* else: ... *)
+
 let reverse_expression2 exp  = 
   
   let rec rev exspression  new_expr = 
@@ -82,7 +95,6 @@ let rec build_list current_expr current_depths expr_accumulator depth_accumulato
  let parsing_par expression_list list_depth =
   let max_depth = find_max_int list_depth in
   let rec build_expression current_expr current_depths expr_accumulator depth_accumulator = 
-    (* Printf.printf "build_expression - "; *)
     (* print_exsprassion_full current_expr; *)
     match (current_expr, current_depths) with
     | (_, []) -> (expr_accumulator, depth_accumulator)
