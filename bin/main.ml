@@ -25,39 +25,29 @@ let array = [1;2;3;4];;
 
 
 let () =
-  Printf.printf "Testing Peano Numbers:\n";
+  Printf.printf "Test lisp:\n";
 
-  let five_peano = int_to_peano 5 in
-  let three_peano = int_to_peano 3 in
-
-  let sum = add five_peano three_peano in
-  Printf.printf "5 + 3 = %d\n" (peano_to_int sum);
-
-  let diff = sub five_peano three_peano in
-
-  Printf.printf "5 - 3 = %d\n" (peano_to_int diff);
-  Printf.printf "5 > 3 = %b\n" (greater five_peano three_peano);
-  Printf.printf "5 < 3 = %b\n" (less five_peano three_peano);
-  Printf.printf "5 = 3 = %b\n\n" (eq five_peano three_peano);
-
-  (* let a = [1;2;3;4] in  *)
-  (* let b = [5;6;7;8] in *)
-  (* List.iter (Printf.printf "'%d' ") (conc a b); *)
-  (* print_exsprassion_full (eval nil_test); *)
+  let names = parsing "(a b c)" in
+  let values = parsing "(1 2 3)" in
+  print_exsprassion_full names;
+  print_exsprassion_full values;
+  print_exsprassion (look_up (pair_lis names values) "c" );;
+  
 
 
-  (* (List) -> (Nil, Nil)*)
 (* let example = "(if  (null (list ) ) ( + 100 1) 2  ) " in *)
-(* let example = "(cond ( (null (list)) (+ 1 2)) ( t (list 2 3 4 5)) ) " in   *)
+(* let example = "(cond ( (null (list)) (+ 1 2)) ( t<Down> (list 2 3 4 5)) ) " in   *)
                  (* 1 1 2 -1 -1  2 2 -1 2  2 2 1 *)
-let example = "( cond ( (null (list  1 2 3 )) (+ 1 1) ) ( (null (list )) 5  )  (t 0) ) " in  
-    let  a = parsing example in
-    print_exsprassion a;
-    print_exsprassion_full (eval a);
-    (* print_exsprassion_full a; *)
-    print_exsprassion (eval a);
+(* let example = "( cond ( (null (list  1 2 3 )) (+ 1 1) ) ( (null (list 2 3 )) 5  )  (t (+ 1 0) ) ) " in   *)
+(* let example = "(null (list ) ) " in   *)
+(*     let  a = parsing example in *)
+(*     print_exsprassion a; *)
+(*     print_exsprassion_full (eval a); *)
+(*     (* print_exsprassion_full a; *) *)
+(*     print_exsprassion (eval a); *)
 
-(* Printf.printf "Max = %d" (find_max_int (rutal (tokenize example)));;  *)
+
+(* (* Printf.printf "Max = %d" (find_max_int (rutal (tokenize example)));;  *) *)
   (* List.iter (Printf.printf "'%d' ") (rutal (tokenize example)); print_newline (); *)
   (* List.iter (Printf.printf "'%s' ") (tokenize example) ; print_newline ();  *)
 

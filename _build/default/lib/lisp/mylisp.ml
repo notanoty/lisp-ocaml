@@ -13,6 +13,33 @@ let get_number: sexpr -> int = function
   | Int x -> x
   | _ -> raise (WrongVariable "Parameter should be of type Int a ");;
 
+(* ((lambda (x y)(+ x y)) 1 2) *)
+(* ((x . 1) (y . 2)) *)
+(* (x y) (1 2) *)
+(* (z x y) *)
+(* (3 1 2) *)
+(*   S_expr (S_expr(S_expr("Z", Nil), S_expr(1, Nil) ),  *)
+(*          *)
+(*         (S_expr ( S_expr( "X", S_expr ("Y",  Nil))), *)
+(*          S_expr(1, S_expr( 2,  Nil)  ) ) ) *)
+(* (  ((z) . (3))  ((x y) . (1 2))  ) *)
+
+
+let rec pair_lis parameters values =
+  match (parameters, values)  with
+  | (Nil, Nil) -> Nil
+  | (Nil, _) | (_, Nil) -> raise (WrongVariable "lists should be equale")
+  | ( S_expr(name, next_name), S_expr (value, next_value)  ) -> 
+   S_expr( S_expr(name, value),(pair_lis next_name next_value ) )
+  
+let rec look_up assoscation_list name = 
+  match assoscation_list with
+  | Nil -> Nil
+  | S_expr( S_expr((String name_check), value ), next ) ->
+    if  (String.equal  name name_check) then S_expr((String name), value )
+    else look_up next name
+  | _ -> raise (WrongVariable "Something went wrong")
+    
 
 let eval exp = 
   let rec evaluate exp = 
@@ -21,32 +48,18 @@ let eval exp =
   | Nil -> Nil
   | Int x-> Int x
   | String x -> String x 
-  | S_expr( (String "list"), x ) ->  eval_list x (*Fix это и квоат и лист*)  
-  | S_expr( (String "car"), S_expr ( x , _) ) ->
-    let S_expr( x , _) = evaluate x in x
-
-  | S_expr( (String "cdr"), S_expr ( x , _) ) ->
-    let S_expr( _ , x) = evaluate x in x
-  | S_expr( (String "null"), S_expr (x, _ )) ->
-    ( 
-    match evaluate x with
-    | Nil -> String "t"
-    | _ -> String "f"
-    )
-
-  | S_expr( (String "if"), S_expr (cond, S_expr (output1, S_expr( output2, Nil) ) )) ->
+  | S_expr( (String "if"), S_expr (conditiion, S_expr (output1, S_expr( output2, Nil) ) )) ->
    (
-    match evaluate cond with
-   | String "t" -> evaluate output1
+    match evaluate conditiion with
+    | String "t" -> evaluate output1
     | String "f" -> evaluate output2
-    | _ ->  raise (WrongOperation "Problem with conditiion");
+    | _ ->  raise (WrongOperation "Conditiion didn't retune boolean");
     ) 
   | S_expr( (String "cond"), x )-> 
       eval_cond x 
-  | S_expr( (String "cons"),S_expr ( x, (S_expr (y, Nil)))) -> S_expr (evaluate x, evaluate y )
   
   | S_expr( (String "quote"), S_expr (cond, Nil )) -> cond
-  | S_expr((String operation ), x) -> apply operation x
+  | S_expr((String operation ), x) -> apply operation (eval_list x)
     | _ -> raise (WrongOperation "Error wrong exp")
   
 
@@ -64,12 +77,12 @@ let eval exp =
   | Nil -> Nil
   | S_expr( S_expr (cond, S_expr (res, Nil)), next) -> 
     (
-    Printf.printf "cond -> ";
-    print_exsprassion_full cond;
-    Printf.printf "cond -> ";
-    print_exsprassion cond;
+    (* Printf.printf "cond -> "; *)
+    (* print_exsprassion_full cond; *)
+    (* Printf.printf "cond -> ";  *)
+    (* print_exsprassion cond; *)
     
-        match (evaluate cond) with
+    match (evaluate cond) with
     | String "t" -> evaluate res
     | String "f" -> eval_cond next
     | _ -> raise (WrongOperation "Conditiion is not true or false")
@@ -79,18 +92,32 @@ let eval exp =
   and apply func exp = 
   print_exsprassion exp;
     match (func, exp) with
-    | ("+", S_expr ( x, (S_expr (y, Nil)))) -> 
-      Int (get_number (evaluate x ) + get_number (evaluate y))
-    | ("-", S_expr ( x, (S_expr (y, Nil)))) -> 
-      Int (get_number (evaluate x ) - get_number (evaluate y))
-    | ("*", S_expr ( x, (S_expr (y, Nil)))) -> 
-      Int (get_number (evaluate x ) * get_number (evaluate y))
-    | ("/", S_expr ( x, (S_expr (y, Nil)))) -> 
-      Int (get_number (evaluate x ) / get_number (evaluate y))
-    | _ -> raise (WrongOperation "Error wrong exp")
+    | ("+", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
+        Int ( x  +  y)
+    | ("-", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
+        Int ( x  -  y)
+    | ("*", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
+        Int ( x  *  y)
+    | ("/", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
+        Int ( x  /  y)
+
+    | ("cons", S_expr ( x, (S_expr (y, Nil)))) ->
+        S_expr ( x,  y )
+    | ("car", S_expr ( S_expr (res, _ ) , Nil) ) -> res
+    | ("cdr", S_expr ( S_expr (_, res ) , Nil) ) -> res
+    | ("list", x ) -> x
+    | ( "null", S_expr (Nil, Nil )) -> String "t"
+    | ( "null", S_expr (_, Nil )) -> String "f"
+
+   | _ -> raise (WrongOperation "Error wrong exp")
 
   in
   evaluate exp 
+
+(* (+  ( + 1 2 ) 1) *)
+    (* apply(+,[3,1]) *)
+
+
 (* car, cdr, list, quote, if, cond, cons, null *)
 
 (* (list 1 2 3) *)
