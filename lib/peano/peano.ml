@@ -92,6 +92,13 @@ let rec exp_to_string = function
         | S_expr (x,  Nil) ->  exp_to_string x 
         | S_expr (x,  y) ->  exp_to_string x ^ ". " ^ exp_to_string_no_par y ;;      
 
+let rec get_exspression_length exsprassion =
+  match exsprassion with
+  | Nil -> 0
+  | Int _ -> 1 
+  | String _ -> 1 
+  | S_expr(_, next) -> 1 + (get_exspression_length next)
+
 let rec peano_to_int = function
   | Zero -> 0
   | Successor x -> 1 + (peano_to_int x);;

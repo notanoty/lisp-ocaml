@@ -4,7 +4,7 @@
 open Peano
 open Tokenize 
 open Parsing 
-open Mylisp
+open Mylisplang
 
 (* open Language.Rutalg *)
 (* exception Error of string *)
@@ -25,26 +25,27 @@ let array = [1;2;3;4];;
 
 
 let () =
-  Printf.printf "Test lisp:\n";
+  (* Printf.printf "Test lisp:\n"; *)
 
-  let names = parsing "(a b c)" in
-  let values = parsing "(1 2 3)" in
-  print_exsprassion_full names;
-  print_exsprassion_full values;
-  print_exsprassion (look_up (pair_lis names values) "c" );;
+  (* let names = parsing "(a b c)" in *)
+  (* let values = parsing "(1 2 3)" in *)
+  (* print_exsprassion_full names; *)
+  (* print_exsprassion_full values; *)
+  (* print_exsprassion (look_up_frames (pair_lis_frames names values) "c" );; *)
   
 
 
-(* let example = "(if  (null (list ) ) ( + 100 1) 2  ) " in *)
+(* ((lambda (x y)(+ x y)) 1 2) *)
+let example = "( (lambda (x y)( + ((lambda (x y) (+ x y) ) 1 2 ) (+ x y) ) ) 3 4)" in
 (* let example = "(cond ( (null (list)) (+ 1 2)) ( t<Down> (list 2 3 4 5)) ) " in   *)
                  (* 1 1 2 -1 -1  2 2 -1 2  2 2 1 *)
 (* let example = "( cond ( (null (list  1 2 3 )) (+ 1 1) ) ( (null (list 2 3 )) 5  )  (t (+ 1 0) ) ) " in   *)
 (* let example = "(null (list ) ) " in   *)
-(*     let  a = parsing example in *)
-(*     print_exsprassion a; *)
-(*     print_exsprassion_full (eval a); *)
+    let  a = parsing example in
+    (* print_exsprassion a; *)
+    (* print_exsprassion_full (eval a); *)
 (*     (* print_exsprassion_full a; *) *)
-(*     print_exsprassion (eval a); *)
+    print_exsprassion (eval a);
 
 
 (* (* Printf.printf "Max = %d" (find_max_int (rutal (tokenize example)));;  *) *)
