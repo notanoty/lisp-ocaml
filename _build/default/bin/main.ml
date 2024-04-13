@@ -36,7 +36,7 @@ let () =
 
 
 (* ((lambda (x y)(+ x y)) 1 2) *)
-let example = "( (lambda (x y)( + ((lambda (x y) (+ x y) ) 1 2 ) (+ x y) ) ) 3 4)" in
+let example = "( (lambda (x y) ( + ((lambda (x y) (+ x y) ) 1 2 ) (+ x y) ) ) (+ 3 1) 4)" in
 (* let example = "(cond ( (null (list)) (+ 1 2)) ( t<Down> (list 2 3 4 5)) ) " in   *)
                  (* 1 1 2 -1 -1  2 2 -1 2  2 2 1 *)
 (* let example = "( cond ( (null (list  1 2 3 )) (+ 1 1) ) ( (null (list 2 3 )) 5  )  (t (+ 1 0) ) ) " in   *)

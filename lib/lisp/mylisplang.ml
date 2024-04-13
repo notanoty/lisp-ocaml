@@ -43,13 +43,12 @@ let rec look_up assoscation_list name =
   | _ -> raise (WrongVariable "Something went wrong")
 
 
-let global_expr = Nil
 
 let pair_lis_frames parameters values =
   if ((get_exspression_length parameters) == (get_exspression_length values)) then 
     S_expr(parameters, values)
   else raise (WrongVariable "Parameters and Values should be the same length")
-
+ 
 
 let  look_up_frames_col assoscation_list name =
   let S_expr (parameters, values) = assoscation_list in 
@@ -63,6 +62,9 @@ let  look_up_frames_col assoscation_list name =
       else look_up_frames_rec next_parameter next_value
   in
   look_up_frames_rec parameters values
+
+
+(* (define foo (lambda (x) (+ 1 x))) *)
 
 
 let  look_up_frames assoscation_list name =
@@ -103,12 +105,8 @@ let eval exp =
       eval_cond x assoscation_list 
   
   | S_expr( (String "quote"), S_expr (cond, Nil )) -> cond
-  | S_expr( S_expr ( String "lambda", S_expr ( parameters , S_expr(exspression, Nil))), values )  ->
-      Printf.printf "this ->";
-      print_exsprassion (S_expr ((pair_lis_frames parameters values), assoscation_list ));
-      evaluate exspression (S_expr ((pair_lis_frames parameters values), assoscation_list ) )
-  | S_expr((String operation ), x) -> apply operation (eval_list x assoscation_list)
-    | _ -> raise (WrongOperation "Error wrong exp")
+   | S_expr(operation, x) -> apply operation (eval_list x assoscation_list) assoscation_list
+    (* | _ -> raise (WrongOperation "Error wrong exp") *)
   
 
 (* ((lambda (x y)(+ x y)) 1 2) *)
@@ -138,27 +136,31 @@ let eval exp =
     )
   | _ -> raise (WrongOperation "Cond should have S_expr inside")
 
-  and apply func exp = 
+  and apply func exp assoscation_list= 
   print_exsprassion exp;
     match (func, exp) with
-    | ("+", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
+    | (String "+", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
         Int ( x  +  y)
-    | ("-", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
+    | (String "-", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
         Int ( x  -  y)
-    | ("*", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
+    | (String "*", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
         Int ( x  *  y)
-    | ("/", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
+    | (String "/", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
         Int ( x  /  y)
 
-    | ("cons", S_expr ( x, (S_expr (y, Nil)))) ->
+    | (String "cons", S_expr ( x, (S_expr (y, Nil)))) ->
         S_expr ( x,  y )
-    | ("car", S_expr ( S_expr (res, _ ) , Nil) ) -> res
-    | ("cdr", S_expr ( S_expr (_, res ) , Nil) ) -> res
-    | ("list", x ) -> x
-    | ( "null", S_expr (Nil, Nil )) -> String "t"
-    | ( "null", S_expr (_, Nil )) -> String "f"
-
-   | _ -> raise (WrongOperation "Error wrong exp")
+    | (String "car", S_expr ( S_expr (res, _ ) , Nil) ) -> res
+    | (String "cdr", S_expr ( S_expr (_, res ) , Nil) ) -> res
+    | (String "list", x ) -> x
+    | (String "null", S_expr (Nil, Nil )) -> String "t"
+    | (String "null", S_expr (_, Nil )) -> String "f"
+    | (S_expr ( String "lambda", S_expr ( parameters , S_expr(exspression, Nil))), values )  -> 
+      (* Printf.printf "this ->"; *)
+      (* print_exsprassion (S_expr ((pair_lis_frames parameters values), assoscation_list )); *)
+      evaluate exspression (S_expr ((pair_lis_frames parameters values), assoscation_list ) )  
+ 
+     | _ -> raise (WrongOperation "Error wrong exp")
 
   in
   evaluate exp Nil
