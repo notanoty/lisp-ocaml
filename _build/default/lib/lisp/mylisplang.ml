@@ -64,6 +64,9 @@ let  look_up_frames_col assoscation_list name =
   look_up_frames_rec parameters values
 
 
+(* (define foo (lambda (x) (+ 1 x))) *)
+
+
 let  look_up_frames assoscation_list name =
 
   let rec look_up_frames_rec assoscation_list name=
