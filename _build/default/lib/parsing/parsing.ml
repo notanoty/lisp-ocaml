@@ -95,13 +95,14 @@ let rec build_list current_expr current_depths expr_accumulator depth_accumulato
  let parsing_par expression_list list_depth =
   let max_depth = find_max_int list_depth in
   let rec build_expression current_expr current_depths expr_accumulator depth_accumulator = 
-    (* print_exsprassion_full current_expr; *)
+    (* print_exsprassion current_expr; *)
     match (current_expr, current_depths) with
     | (_, []) -> (expr_accumulator, depth_accumulator)
     | (Nil, _) -> (expr_accumulator, depth_accumulator)
     | (S_expr (head_expr, tail_expr), (current_depth :: tail_depths)) ->
         if current_depth = max_depth then
-            let (new_tail, new_expr_accumulator, new_depth_accumulator) = build_list tail_expr tail_depths expr_accumulator depth_accumulator Nil max_depth in
+            let (new_tail, new_expr_accumulator, new_depth_accumulator) = 
+         build_list tail_expr tail_depths expr_accumulator depth_accumulator Nil max_depth in
             build_expression Nil new_depth_accumulator (S_expr (new_expr_accumulator, new_tail)) new_depth_accumulator
         else
             let (new_expr_accumulator, new_depth_accumulator) = build_expression tail_expr tail_depths expr_accumulator depth_accumulator  in
@@ -125,48 +126,5 @@ let parsing exspression =
   match res_expression with
   | S_expr (x , _) -> x
   | x -> x
-
-(* (+ 1 2 . 4) *)
-
-(* car, cdr, list, quote, if, cond, cons, null *)
-
-
-
-
-
-(* let parsing list list_depth =  *)
-    (* let max = find_max_int list_depth in  *)
-    (* let build_expression current_expr current_depths = *)
-      (* match (current_expr current_depths) with *)
-      (* |( (head_expr:: tail_expr) (max :: tail_depths)) ->   *)
-
-
- 
-(**)
-(* let parsing list list_depth = *)
-(*   let max_depth = find_max_int list_depth in *)
-(*   let rec build_expression current_expr current_depths = match (current_expr, current_depths) with *)
-(*     | ([], _) | (_, []) -> []  *)
-(*     | (head_expr::tail_expr, max_depth::tail_depths) -> [] *)
-(*     | (head_expr::tail_expr, hd_ls_d::tail_depths) -> *)
-(*         ( head_expr ::(build_expression tail_expr tail_depths))  *)
-(*   and build_list current_expr current_depths  = match (current_expr, current_depths) with  *)
-(*     | ([], _) | (_, []) -> [] *)
-(*     | (head_expr::tail_expr, max_depth::tail_depths) -> [] *)
-(*     | (head_expr::tail_expr, _ ::tail_depths) ->  *)
-(*   in *)
-(*    build_expression list list_depth *)
-
-
-
-
-
-
-
-
-
-
-
-
 
 

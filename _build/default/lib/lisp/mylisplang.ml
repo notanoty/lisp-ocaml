@@ -71,7 +71,8 @@ let  look_up_frames assoscation_list name =
 
   let rec look_up_frames_rec assoscation_list name=
   match assoscation_list with
-    | Nil -> raise (WrongVariable "This parameter does not exist")
+    | Nil -> Nil 
+      (* raise (WrongVariable "This parameter does not exist") *)
     | S_expr (column, next_column) -> 
       let res = look_up_frames_col column name in 
       if res == Nil then look_up_frames_rec next_column name
@@ -80,64 +81,91 @@ let  look_up_frames assoscation_list name =
   in
   look_up_frames_rec assoscation_list name 
 
-
-let eval exp = 
-  let rec evaluate exp assoscation_list = 
-  print_exsprassion exp;
-  match exp with
-  | Nil -> Nil
-  | Int x-> Int x
-  | String name ->
-      (
-      match (look_up_frames assoscation_list name) with
-      | Nil -> raise (WrongVariable "association wasnt found")
-      | S_expr(_, value ) -> value
-      | _ -> raise (WrongVariable "Something went wrong idk acttualy")
-      )
-  | S_expr( (String "if"), S_expr (conditiion, S_expr (output1, S_expr( output2, Nil) ) )) ->
-   (
-    match evaluate conditiion assoscation_list with
-    | String "t" -> evaluate output1 assoscation_list
-    | String "f" -> evaluate output2 assoscation_list
-    | _ ->  raise (WrongOperation "Conditiion didn't retune boolean");
+let eval exp assoscations=
+  (* print_exsprassion exp; *)
+  let rec evaluate exp assoscation_list =
+    Printf.printf "evaluate: ";
+    print_exsprassion exp;
+    match exp with
+    | Nil -> Nil
+    | Int x-> Int x
+    | String name ->
+        (
+        match (look_up_frames assoscation_list name) with
+        | Nil -> raise (WrongVariable "association wasnt found")
+        | S_expr(_, value ) -> 
+            Printf.printf "look up result: ";
+            print_exsprassion value;
+             value 
+        | _ -> String name  
+        )
+    | S_expr( (String "if"), S_expr (conditiion, S_expr (output1, S_expr( output2, Nil) ) )) ->
+     (
+      match evaluate conditiion assoscation_list with
+      | String "t" -> evaluate output1 assoscation_list
+      | String "f" -> evaluate output2 assoscation_list
+      | _ ->  raise (WrongOperation "Conditiion didn't retune boolean");
+      ) 
+    | S_expr( (String "cond"), x )-> eval_cond x assoscation_list 
+    
+    | S_expr( (String "quote"), S_expr (cond, Nil )) -> cond
+    | S_expr(String operation, x) -> (
+      match (look_up_frames assoscation_list operation) with
+        | Nil -> apply (String operation) (eval_list x assoscation_list) assoscation_list
+        | S_expr (_, value) -> 
+        Printf.printf "Value: ";
+        print_exsprassion value;
+          evaluate (S_expr(value, x)) assoscation_list 
     ) 
-  | S_expr( (String "cond"), x )-> 
-      eval_cond x assoscation_list 
-  
-  | S_expr( (String "quote"), S_expr (cond, Nil )) -> cond
-   | S_expr(operation, x) -> apply operation (eval_list x assoscation_list) assoscation_list
-    (* | _ -> raise (WrongOperation "Error wrong exp") *)
-  
+    | S_expr(operation, x) ->  
+      Printf.printf "Operation: ";
+      print_exsprassion operation;
+      Printf.printf "exspression: ";
+      print_exsprassion x; 
+
+      apply operation (eval_list x assoscation_list) assoscation_list
+
+      (* apply operation (eval_list x assoscation_list) assoscation_list *)
+    
 
 (* ((lambda (x y)(+ x y)) 1 2) *)
 
   and eval_list exp assoscation_list=
-  match exp with
-  | Nil -> Nil
-  | S_expr( x , y) -> S_expr (evaluate x assoscation_list, eval_list y assoscation_list)
-  | _ -> raise (WrongVariable "List can not be anything but S_expr") 
-  
+    (* Printf.printf "eval_list: "; *)
+    (* print_exsprassion exp; *)
+    match exp with
+    | Nil -> Nil
+    | S_expr( x , y) -> S_expr (evaluate x assoscation_list, eval_list y assoscation_list)
+    | _ -> raise (WrongVariable "List can not be anything but S_expr") 
+    
 
 
   and eval_cond exp assoscation_list = 
-  match exp with
-  | Nil -> Nil
-  | S_expr( S_expr (cond, S_expr (res, Nil)), next) -> 
-    (
-    (* Printf.printf "cond -> "; *)
-    (* print_exsprassion_full cond; *)
-    (* Printf.printf "cond -> ";  *)
-    (* print_exsprassion cond; *)
-    
-    match (evaluate cond assoscation_list) with
-    | String "t" -> evaluate res assoscation_list
-    | String "f" -> eval_cond next assoscation_list
-    | _ -> raise (WrongOperation "Conditiion is not true or false")
-    )
-  | _ -> raise (WrongOperation "Cond should have S_expr inside")
+    (* Printf.printf "eval_cond: "; *)
+    (* print_exsprassion exp; *)
+    match exp with
+    | Nil -> Nil
+    | S_expr( S_expr (cond, S_expr (res, Nil)), next) -> 
+      (
+      (* Printf.printf "cond -> "; *)
+      (* print_exsprassion_full cond; *)
+      (* Printf.printf "cond -> ";  *)
+      (* print_exsprassion cond; *)
+      
+      match (evaluate cond assoscation_list) with
+      | String "t" -> evaluate res assoscation_list
+      | String "f" -> eval_cond next assoscation_list
+      | _ -> raise (WrongOperation "Conditiion is not true or false")
+      )
+    | _ -> raise (WrongOperation "Cond should have S_expr inside")
 
-  and apply func exp assoscation_list= 
-  print_exsprassion exp;
+  and apply func exp assoscation_list=
+
+    Printf.printf "func: ";
+    print_exsprassion func;
+    Printf.printf "apply: ";
+    print_exsprassion exp;
+    (* print_exsprassion exp; *)
     match (func, exp) with
     | (String "+", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
         Int ( x  +  y)
@@ -155,15 +183,21 @@ let eval exp =
     | (String "list", x ) -> x
     | (String "null", S_expr (Nil, Nil )) -> String "t"
     | (String "null", S_expr (_, Nil )) -> String "f"
-    | (S_expr ( String "lambda", S_expr ( parameters , S_expr(exspression, Nil))), values )  -> 
+    | (S_expr ( String "lambda", S_expr ( parameters , S_expr(exspression, Nil))), values )  ->
+      (    
+        Printf.printf "exspression: ";
+        print_exsprassion exspression;
+        match parameters with
+        | S_expr _ -> evaluate exspression (S_expr ((pair_lis_frames parameters values), assoscation_list ) )
+        | _ -> evaluate exspression (S_expr ((pair_lis_frames (S_expr (parameters, Nil)) values), assoscation_list ) )
+      )
       (* Printf.printf "this ->"; *)
       (* print_exsprassion (S_expr ((pair_lis_frames parameters values), assoscation_list )); *)
-      evaluate exspression (S_expr ((pair_lis_frames parameters values), assoscation_list ) )  
  
      | _ -> raise (WrongOperation "Error wrong exp")
 
   in
-  evaluate exp Nil
+  evaluate exp assoscations 
 
 (* (+  ( + 1 2 ) 1) *)
     (* apply(+,[3,1]) *)
@@ -177,6 +211,27 @@ let eval exp =
 
     (* (+ ( 2 3) 4)   (apply + ( /6 4)) *)
 
+
+let get_first_string expression =
+  match expression with
+  | String x -> x
+  | _ -> raise (WrongVariable "Exspression should be String")
+
+let rec driver_loop exspression assoscation_list =
+  match exspression with
+  | Nil -> 
+    Printf.printf "The end =)\n"
+  | S_expr( S_expr(String "define", S_expr (  name, S_expr ( lambda, Nil ) )) , next) -> 
+    Printf.printf "Defined %s " (get_first_string name);
+    print_exsprassion lambda;
+    driver_loop next (S_expr (
+      (pair_lis_frames (S_expr (name, Nil)) (S_expr ( lambda , Nil)) ), 
+      assoscation_list ) )
+  | S_expr( exp , next) -> 
+    print_exsprassion (eval exp assoscation_list);
+    driver_loop next assoscation_list
+
+  | _ -> raise (WrongVariable "IDK acttualy");;
 
 
 

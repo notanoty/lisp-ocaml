@@ -1,4 +1,4 @@
-# dune exec ./bin/main.exe -- define_test.ls
+# dune exec ./bin/main.exe
 # OCAMLPARAM: unset
 # Shared cache: disabled
 # Shared cache location: /home/notanaty/.cache/dune/db
@@ -20,4 +20,4 @@
 #        }
 #  ; instrument_with = []
 #  }
-$ /home/notanaty/.opam/default/bin/ocamlc.opt -config > /tmp/dune_6734a6_output
+$ /home/notanaty/.opam/default/bin/ocamlc.opt -config > /tmp/dune_a89c88_output

@@ -35,9 +35,12 @@ let get_contents_from_file =
   read_file ( dir_location ^ if Array.length Sys.argv - 1 == 0 then file_standard else Sys.argv.(1))
 
 let () =  
-  let contents = get_contents_from_file in
-  Printf.printf  "%s\n" contents 
+  let contents = "(" ^ get_contents_from_file ^ ")" in
+  (* Printf.printf  "%s\n" contents; *)
+  let parsing_result = parsing contents in
+  driver_loop parsing_result Nil;;
+
 
 (* let example = "( (lambda (x y) ( + ((lambda (x y) (+ x y) ) 1 2 ) (+ x y) ) ) (+ 3 1) 4)" in *)
-(*    let  a = parsing example in *)
-(*     print_exsprassion (eval a); *)
+   (* let  a = parsing example in *)
+    (* print_exsprassion (eval a); *)
