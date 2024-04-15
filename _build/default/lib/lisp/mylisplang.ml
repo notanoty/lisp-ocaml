@@ -4,10 +4,11 @@
 
 open Peano
 open Tokenize
+open Parsing
 
 exception WrongVariable of string
 exception WrongOperation of string
-
+exception ParsingError of string
 
 let get_number: sexpr -> int = function
   | Int x -> x
@@ -234,4 +235,58 @@ let rec driver_loop exspression assoscation_list =
   | _ -> raise (WrongVariable "IDK acttualy");;
 
 
+
+let rec driver_loop exspression assoscation_list =
+  match exspression with
+  | Nil -> 
+    Printf.printf "The end =)\n"
+  | S_expr( S_expr(String "define", S_expr (  name, S_expr ( lambda, Nil ) )) , next) -> 
+    Printf.printf "Defined %s " (get_first_string name);
+    print_exsprassion lambda;
+    driver_loop next (S_expr (
+      (pair_lis_frames (S_expr (name, Nil)) (S_expr ( lambda , Nil)) ), 
+      assoscation_list ) )
+  | S_expr( exp , next) -> 
+    print_exsprassion (eval exp assoscation_list);
+    driver_loop next assoscation_list
+
+  | _ -> raise (WrongVariable "IDK acttualy");;
+
+let rec driver_loop_terminal assoscation_list =
+  Printf.printf ">> ";
+  let expression =
+    try 
+      parsing (read_line ())
+    with
+    | Failure msg -> 
+      Printf.printf "Error happened: %s\n" msg;
+      driver_loop_terminal assoscation_list;
+
+    | _ -> 
+      Printf.printf "Unknown parsing error\n";
+      driver_loop_terminal assoscation_list 
+  in  
+  try 
+    match expression with
+    | Nil ->  Printf.printf "The end =)\n"; Nil
+    |  S_expr(String "define", S_expr (  name, S_expr ( lambda, Nil ) )) -> 
+      Printf.printf "Defined %s " (get_first_string name);
+      print_exsprassion lambda;
+      driver_loop_terminal (S_expr (
+        (pair_lis_frames (S_expr (name, Nil)) (S_expr ( lambda , Nil)) ), 
+        assoscation_list ) )
+    |  exp  -> 
+      print_exsprassion (eval exp assoscation_list);
+      driver_loop_terminal assoscation_list
+  with 
+  | WrongVariable msg ->
+    Printf.printf "Error: %s\n" msg;
+    driver_loop_terminal assoscation_list 
+  | Failure msg ->
+    Printf.printf "Error during evaluation: %s\n" msg;
+    driver_loop_terminal assoscation_list 
+  | _ ->
+    Printf.printf "Unknown error occurred\n";
+    driver_loop_terminal assoscation_list 
+  (* | _ -> raise (WrongVariable "IDK acttualy");; *)
 
