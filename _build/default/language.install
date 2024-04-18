@@ -1,17 +1,13 @@
 lib: [
   "_build/install/default/lib/language/META"
   "_build/install/default/lib/language/dune-package"
-  "_build/install/default/lib/language/mylisp/lisp.ml" {"mylisp/lisp.ml"}
-  "_build/install/default/lib/language/mylisp/mylisp.a" {"mylisp/mylisp.a"}
-  "_build/install/default/lib/language/mylisp/mylisp.cma" {"mylisp/mylisp.cma"}
-  "_build/install/default/lib/language/mylisp/mylisp.cmi" {"mylisp/mylisp.cmi"}
-  "_build/install/default/lib/language/mylisp/mylisp.cmt" {"mylisp/mylisp.cmt"}
-  "_build/install/default/lib/language/mylisp/mylisp.cmx" {"mylisp/mylisp.cmx"}
-  "_build/install/default/lib/language/mylisp/mylisp.cmxa" {"mylisp/mylisp.cmxa"}
-  "_build/install/default/lib/language/mylisp/mylisp.ml" {"mylisp/mylisp.ml"}
-  "_build/install/default/lib/language/mylisp/mylisp__Lisp.cmi" {"mylisp/mylisp__Lisp.cmi"}
-  "_build/install/default/lib/language/mylisp/mylisp__Lisp.cmt" {"mylisp/mylisp__Lisp.cmt"}
-  "_build/install/default/lib/language/mylisp/mylisp__Lisp.cmx" {"mylisp/mylisp__Lisp.cmx"}
+  "_build/install/default/lib/language/mylisp/mylisplang.a" {"mylisp/mylisplang.a"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cma" {"mylisp/mylisplang.cma"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cmi" {"mylisp/mylisplang.cmi"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cmt" {"mylisp/mylisplang.cmt"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cmx" {"mylisp/mylisplang.cmx"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cmxa" {"mylisp/mylisplang.cmxa"}
+  "_build/install/default/lib/language/mylisp/mylisplang.ml" {"mylisp/mylisplang.ml"}
   "_build/install/default/lib/language/opam"
   "_build/install/default/lib/language/parsing/parsing.a" {"parsing/parsing.a"}
   "_build/install/default/lib/language/parsing/parsing.cma" {"parsing/parsing.cma"}
@@ -36,7 +32,7 @@ lib: [
   "_build/install/default/lib/language/tokenize/tokenize.ml" {"tokenize/tokenize.ml"}
 ]
 libexec: [
-  "_build/install/default/lib/language/mylisp/mylisp.cmxs" {"mylisp/mylisp.cmxs"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cmxs" {"mylisp/mylisplang.cmxs"}
   "_build/install/default/lib/language/parsing/parsing.cmxs" {"parsing/parsing.cmxs"}
   "_build/install/default/lib/language/peano/peano.cmxs" {"peano/peano.cmxs"}
   "_build/install/default/lib/language/tokenize/tokenize.cmxs" {"tokenize/tokenize.cmxs"}

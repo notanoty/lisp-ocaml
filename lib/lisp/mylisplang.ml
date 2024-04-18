@@ -110,6 +110,7 @@ let eval exp assoscations=
     | S_expr( (String "cond"), x )-> eval_cond x assoscation_list 
     
     | S_expr( (String "quote"), S_expr (cond, Nil )) -> cond
+    | S_expr ( String "lambda", S_expr ( _, S_expr( _ , Nil))) as lambda_exspression -> lambda_exspression
     | S_expr(String operation, x) -> (
       match (look_up_frames assoscation_list operation) with
         | Nil -> apply (String operation) (eval_list x assoscation_list) assoscation_list
@@ -226,7 +227,7 @@ let rec driver_loop exspression assoscation_list =
     Printf.printf "Defined %s " (get_first_string name);
     print_exsprassion lambda;
     driver_loop next (S_expr (
-      (pair_lis_frames (S_expr (name, Nil)) (S_expr ( lambda , Nil)) ), 
+      (pair_lis_frames (S_expr (name, Nil)) (S_expr ( (eval lambda assoscation_list ) , Nil)) ), 
       assoscation_list ) )
   | S_expr( exp , next) -> 
     print_exsprassion (eval exp assoscation_list);
@@ -244,7 +245,7 @@ let rec driver_loop exspression assoscation_list =
     Printf.printf "Defined %s " (get_first_string name);
     print_exsprassion lambda;
     driver_loop next (S_expr (
-      (pair_lis_frames (S_expr (name, Nil)) (S_expr ( lambda , Nil)) ), 
+      (pair_lis_frames (S_expr (name, Nil)) (S_expr ( (eval lambda assoscation_list ) , Nil)) ), 
       assoscation_list ) )
   | S_expr( exp , next) -> 
     print_exsprassion (eval exp assoscation_list);
@@ -273,7 +274,7 @@ let rec driver_loop_terminal assoscation_list =
       Printf.printf "Defined %s " (get_first_string name);
       print_exsprassion lambda;
       driver_loop_terminal (S_expr (
-        (pair_lis_frames (S_expr (name, Nil)) (S_expr ( lambda , Nil)) ), 
+        (pair_lis_frames (S_expr (name, Nil)) (S_expr ( (eval lambda assoscation_list) , Nil)) ), 
         assoscation_list ) )
     |  exp  -> 
       print_exsprassion (eval exp assoscation_list);

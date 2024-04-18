@@ -5,17 +5,13 @@
  (lib
   (META
    dune-package
-   mylisp/lisp.ml
-   mylisp/mylisp.a
-   mylisp/mylisp.cma
-   mylisp/mylisp.cmi
-   mylisp/mylisp.cmt
-   mylisp/mylisp.cmx
-   mylisp/mylisp.cmxa
-   mylisp/mylisp.ml
-   mylisp/mylisp__Lisp.cmi
-   mylisp/mylisp__Lisp.cmt
-   mylisp/mylisp__Lisp.cmx
+   mylisp/mylisplang.a
+   mylisp/mylisplang.cma
+   mylisp/mylisplang.cmi
+   mylisp/mylisplang.cmt
+   mylisp/mylisplang.cmx
+   mylisp/mylisplang.cmxa
+   mylisp/mylisplang.ml
    opam
    parsing/parsing.a
    parsing/parsing.cma
@@ -39,34 +35,24 @@
    tokenize/tokenize.cmxa
    tokenize/tokenize.ml))
  (libexec
-  (mylisp/mylisp.cmxs
+  (mylisp/mylisplang.cmxs
    parsing/parsing.cmxs
    peano/peano.cmxs
    tokenize/tokenize.cmxs)))
 (library
  (name language.mylisp)
  (kind normal)
- (archives (byte mylisp/mylisp.cma) (native mylisp/mylisp.cmxa))
- (plugins (byte mylisp/mylisp.cma) (native mylisp/mylisp.cmxs))
- (native_archives mylisp/mylisp.a)
- (requires language.peano language.tokenize)
- (main_module_name Mylisp)
+ (archives (byte mylisp/mylisplang.cma) (native mylisp/mylisplang.cmxa))
+ (plugins (byte mylisp/mylisplang.cma) (native mylisp/mylisplang.cmxs))
+ (native_archives mylisp/mylisplang.a)
+ (requires language.peano language.tokenize language.parsing)
+ (main_module_name Mylisplang)
  (modes byte native)
  (modules
-  (wrapped
-   (group
-    (alias
-     (obj_name mylisp)
-     (visibility public)
-     (kind alias)
-     (source (path Mylisp) (impl (path mylisp/mylisp.ml-gen))))
-    (name Mylisp)
-    (modules
-     (module
-      (obj_name mylisp__Lisp)
-      (visibility public)
-      (source (path Lisp) (impl (path mylisp/lisp.ml))))))
-   (wrapped true))))
+  (singleton
+   (obj_name mylisplang)
+   (visibility public)
+   (source (path Mylisplang) (impl (path mylisp/mylisplang.ml))))))
 (library
  (name language.parsing)
  (kind normal)

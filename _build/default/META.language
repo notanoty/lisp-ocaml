@@ -1,11 +1,11 @@
 package "mylisp" (
   directory = "mylisp"
   description = ""
-  requires = "language.peano language.tokenize"
-  archive(byte) = "mylisp.cma"
-  archive(native) = "mylisp.cmxa"
-  plugin(byte) = "mylisp.cma"
-  plugin(native) = "mylisp.cmxs"
+  requires = "language.parsing language.peano language.tokenize"
+  archive(byte) = "mylisplang.cma"
+  archive(native) = "mylisplang.cmxa"
+  plugin(byte) = "mylisplang.cma"
+  plugin(native) = "mylisplang.cmxs"
 )
 package "parsing" (
   directory = "parsing"
