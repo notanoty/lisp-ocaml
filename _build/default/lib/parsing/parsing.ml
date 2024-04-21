@@ -10,13 +10,18 @@ let find_max_int current_expr =
   let rec find_max list max = 
       match (list) with
       | [] -> 0
-      | (hd::[]) -> if hd > max then hd else max
-      | (hd::tail) -> find_max tail (if hd > max then hd else max)
+      | (head::[]) -> if head > max then head else max
+      | (head::tail) -> find_max tail (if head > max then head else max)
   in
   find_max current_expr 0;;
 
 let string_to_sexpr str =
   list_string_to_exp (tokenize str);;
+
+
+let print_list lst =
+  List.iter (fun x -> Printf.printf "%d " x) lst;
+  print_endline ""  
 
 let rutal_original list = 
   let len = List.length list in 
@@ -90,15 +95,15 @@ let rec build_list current_expr current_depths expr_accumulator depth_accumulato
  
 
 
-
-
  let parsing_par expression_list list_depth =
   let max_depth = find_max_int list_depth in
   let rec build_expression current_expr current_depths expr_accumulator depth_accumulator = 
-    (* print_exsprassion current_expr; *)
     match (current_expr, current_depths) with
-    | (_, []) -> (expr_accumulator, depth_accumulator)
-    | (Nil, _) -> (expr_accumulator, depth_accumulator)
+    (* | (_, []) ->  *)
+      (* (expr_accumulator, depth_accumulator) *)
+    | (Nil, _) ->
+      Printf.printf "This happed\n";
+      (expr_accumulator, depth_accumulator)
     | (S_expr (head_expr, tail_expr), (current_depth :: tail_depths)) ->
         if current_depth = max_depth then
             let (new_tail, new_expr_accumulator, new_depth_accumulator) = 
@@ -107,6 +112,7 @@ let rec build_list current_expr current_depths expr_accumulator depth_accumulato
         else
             let (new_expr_accumulator, new_depth_accumulator) = build_expression tail_expr tail_depths expr_accumulator depth_accumulator  in
             (S_expr (head_expr, new_expr_accumulator), current_depth :: new_depth_accumulator )
+
     | _ -> raise (WrongVariable "This expression cannot be supported")
 
  in
@@ -116,11 +122,19 @@ let rec build_list current_expr current_depths expr_accumulator depth_accumulato
 let parsing exspression = 
     let depth_list  = (rutal ( tokenize exspression) ) in 
     let rec parsing_rec expression_list list_depth  =
+      (* print_exsprassion expression_list; *)
+      (* Printf.printf "max_depth = %d List.len = %d\n" (find_max_int list_depth) (List.length list_depth); *)
+      (* print_list list_depth; *)
+    if (find_max_int list_depth == 0) && (List.length list_depth > 1) then raise (WrongVariable "aaa")
+    
+    else 
+      (
       match list_depth with
       | [-1] -> expression_list
       | _ ->
       let (new_exspression, new_depth) = parsing_par expression_list list_depth in
         parsing_rec new_exspression new_depth
+      )
     in
   let res_expression = parsing_rec (string_to_sexpr exspression) depth_list  in
   match res_expression with

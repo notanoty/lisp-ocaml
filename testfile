@@ -1,2 +1,0 @@
-rlwrap olisp 
-echo "If file didnt execute just run opam init"
