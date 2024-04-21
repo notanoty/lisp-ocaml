@@ -15,7 +15,7 @@ let file_standard = "testcode.ls"
 let rec conc ls1 ls2 = 
   match (ls1, ls2) with
   | ([], ls2) -> ls2
-  | ( (hd :: tail), ls2 ) -> hd ::(  conc tail  (ls2) )
+  | ( (head :: tail), ls2 ) -> head ::(  conc tail  (ls2) )
 
 let read_file file =
   In_channel.with_open_bin file In_channel.input_all
