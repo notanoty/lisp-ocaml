@@ -110,10 +110,11 @@ let eval exp assoscations=
     | S_expr( (String "cond"), x )-> eval_cond x assoscation_list 
     
     | S_expr( (String "quote"), S_expr (cond, Nil )) -> cond
-    | S_expr ( String "lambda", S_expr ( _, S_expr( _ , Nil))) as lambda_exspression -> lambda_exspression
+    | S_expr ( String "lambda", S_expr ( _, S_expr( _ , Nil))) as lambda_exspression -> Closure (lambda_exspression, assoscation_list)
+
     | S_expr(String operation, x) -> (
       match (look_up_frames assoscation_list operation) with
-        | Nil -> apply (String operation) (eval_list x assoscation_list) assoscation_list
+        | Nil -> apply (String operation) (eval_list x assoscation_list) 
         | S_expr (_, value) -> 
         Printf.printf "Value: ";
         print_exsprassion value;
@@ -125,7 +126,7 @@ let eval exp assoscations=
       Printf.printf "exspression: ";
       print_exsprassion x; 
 
-      apply operation (eval_list x assoscation_list) assoscation_list
+      apply operation (eval_list x assoscation_list) 
 
       (* apply operation (eval_list x assoscation_list) assoscation_list *)
     
@@ -161,7 +162,7 @@ let eval exp assoscations=
       )
     | _ -> raise (WrongOperation "Cond should have S_expr inside")
 
-  and apply func exp assoscation_list=
+  and apply func exp =
 
     Printf.printf "func: ";
     print_exsprassion func;
@@ -184,14 +185,15 @@ let eval exp assoscations=
     | (String "cdr", S_expr ( S_expr (_, res ) , Nil) ) -> res
     | (String "list", x ) -> x
     | (String "null", S_expr (Nil, Nil )) -> String "t"
-    | (String "null", S_expr (_, Nil )) -> String "f"
-    | (S_expr ( String "lambda", S_expr ( parameters , S_expr(exspression, Nil))), values )  ->
+    | (String "null", S_expr (_, Nil )) -> String "f" 
+    | (Closure (S_expr ( String "lambda", S_expr ( parameters , S_expr(exspression, Nil))), new_association_list ), values )  
+      ->
       (    
         Printf.printf "exspression: ";
         print_exsprassion exspression;
         match parameters with
-        | S_expr _ -> evaluate exspression (S_expr ((pair_lis_frames parameters values), assoscation_list ) )
-        | _ -> evaluate exspression (S_expr ((pair_lis_frames (S_expr (parameters, Nil)) values), assoscation_list ) )
+        | S_expr _ -> evaluate exspression (S_expr ((pair_lis_frames parameters values), new_association_list ) )
+        | _ -> evaluate exspression (S_expr ((pair_lis_frames (S_expr (parameters, Nil)) values), new_association_list ) )
       )
       (* Printf.printf "this ->"; *)
       (* print_exsprassion (S_expr ((pair_lis_frames parameters values), assoscation_list )); *)

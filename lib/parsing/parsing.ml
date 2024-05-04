@@ -78,6 +78,7 @@ let reverse_expression2 exp  =
     | Int x  -> Int x
     | S_expr (head_expr, tail_expr) ->  
       rev tail_expr ( S_expr ( (strint_to_expr_int head_expr), new_expr) ) 
+    | _ -> raise (WrongVariable  "Closure should not be here") 
   in
    rev exp Nil  
 
@@ -102,7 +103,7 @@ let rec build_list current_expr current_depths expr_accumulator depth_accumulato
     (* | (_, []) ->  *)
       (* (expr_accumulator, depth_accumulator) *)
     | (Nil, _) ->
-      Printf.printf "This happed\n";
+      (* Printf.printf "This happed\n"; *)
       (expr_accumulator, depth_accumulator)
     | (S_expr (head_expr, tail_expr), (current_depth :: tail_depths)) ->
         if current_depth = max_depth then

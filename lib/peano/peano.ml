@@ -1,3 +1,4 @@
+(* [@@@ocaml.warning "-8"] *)
 type peano_number = Zero | Successor of peano_number;;
 
 
@@ -5,7 +6,9 @@ type sexpr =
     | Nil 
     | Int of int
     | String of string
-    | S_expr of sexpr * sexpr;;
+    | S_expr of sexpr * sexpr
+    | Closure of sexpr * sexpr;;
+
 
 
 let exp = S_expr (S_expr( (Int 10), (S_expr ((String "test") , (Int 1) ) ) ), S_expr ((String "aaaa") , (Int 44)) ) ;;
@@ -35,6 +38,7 @@ let print_exsprassion exsprassion =
                               Printf.printf ". ";
                               print_exp y ;
                               Printf.printf ") "
+    | Closure _ -> Printf.printf "Closure" 
 
      and print_exp = function
           | Nil -> Printf.printf "test "
@@ -49,6 +53,7 @@ let print_exsprassion exsprassion =
                               print_exp_par x;
                               Printf.printf ". ";
                               print_exp  y 
+          | Closure _ -> Printf.printf "Closure" 
       in
   print_exp_par exsprassion ;
   Printf.printf "\n";;
@@ -71,6 +76,7 @@ let print_exsprassion_full exsprassion =
                               Printf.printf ", ";
                               print_exp_par y ;
                               Printf.printf ") ";
+          | Closure _ -> Printf.printf "(Closure)" 
       in
   print_exp_par exsprassion ;
   Printf.printf "\n";;
@@ -83,14 +89,15 @@ let rec exp_to_string = function
         | S_expr (x, (S_expr (y,z ) )) ->   "( " ^ exp_to_string x ^ exp_to_string_no_par (S_expr (y,z)) ^ ") "
         | S_expr (x,  Nil) ->  "( " ^ exp_to_string x ^ ") "
         | S_expr (x,  y) ->  "( " ^ exp_to_string x ^ ". " ^ exp_to_string_no_par y ^ ") "
-        
-        and  exp_to_string_no_par = function
+        | Closure _ -> "(Closure)" 
+        and  exp_to_string_no_par = function  
         | Nil -> "Nil "
         | Int x -> Printf.sprintf "%d " x 
         | String x ->  Printf.sprintf "\"%s\" " x
         | S_expr (x, (S_expr (y,z ) )) ->  exp_to_string x ^ exp_to_string_no_par (S_expr (y,z)) 
         | S_expr (x,  Nil) ->  exp_to_string x 
-        | S_expr (x,  y) ->  exp_to_string x ^ ". " ^ exp_to_string_no_par y ;;      
+        | S_expr (x,  y) ->  exp_to_string x ^ ". " ^ exp_to_string_no_par y 
+        | Closure _ -> "Closure"
 
 let rec get_exspression_length exsprassion =
   match exsprassion with
@@ -98,6 +105,7 @@ let rec get_exspression_length exsprassion =
   | Int _ -> 1 
   | String _ -> 1 
   | S_expr(_, next) -> 1 + (get_exspression_length next)
+  | Closure _ -> 1 
 
 let rec peano_to_int = function
   | Zero -> 0
@@ -144,8 +152,8 @@ let rec eq x y =
 let rec list_string_to_exp list = 
     match list with
     | [] -> Nil
-    | hd::[] -> S_expr ((String hd),  Nil)
-    | hd::tail -> S_expr ((String hd),  list_string_to_exp tail)
+    | head::[] -> S_expr ((String head),  Nil)
+    | head::tail -> S_expr ((String head),  list_string_to_exp tail)
 
 (*  ("aasdas ", "bbbb". "cccc") *)
 
