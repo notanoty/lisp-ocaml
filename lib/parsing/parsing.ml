@@ -102,7 +102,6 @@ let rec build_list current_expr current_depths expr_accumulator depth_accumulato
     (* | (_, []) ->  *)
       (* (expr_accumulator, depth_accumulator) *)
     | (Nil, _) ->
-      Printf.printf "This happed\n";
       (expr_accumulator, depth_accumulator)
     | (S_expr (head_expr, tail_expr), (current_depth :: tail_depths)) ->
         if current_depth = max_depth then

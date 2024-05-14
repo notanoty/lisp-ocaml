@@ -102,7 +102,6 @@ let rec build_list current_expr current_depths expr_accumulator depth_accumulato
     (* | (_, []) ->  *)
       (* (expr_accumulator, depth_accumulator) *)
     | (Nil, _) ->
-      Printf.printf "This happed\n";
       (expr_accumulator, depth_accumulator)
     | (S_expr (head_expr, tail_expr), (current_depth :: tail_depths)) ->
         if current_depth = max_depth then
@@ -125,7 +124,7 @@ let parsing exspression =
       (* print_exsprassion expression_list; *)
       (* Printf.printf "max_depth = %d List.len = %d\n" (find_max_int list_depth) (List.length list_depth); *)
       (* print_list list_depth; *)
-    if (find_max_int list_depth == 0) && (List.length list_depth > 1) then raise (WrongVariable "aaa")
+    if (find_max_int list_depth == 0) && (List.length list_depth > 1) then raise (WrongVariable "Too many arguments for this exspression")
     
     else 
       (
