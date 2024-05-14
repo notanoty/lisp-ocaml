@@ -82,9 +82,9 @@ let  look_up_frames assoscation_list name =
   in
   look_up_frames_rec assoscation_list name 
 
-let eval exp assoscations=
+let eval exp environment eval_procedures=
   (* print_exsprassion exp; *)
-  let rec evaluate exp assoscation_list =
+  let rec evaluate (exp : sexpr) (env : sexpr) (procedures: sexpr) : sexpr=
     Printf.printf "evaluate: ";
     print_exsprassion exp;
     match exp with
@@ -92,8 +92,17 @@ let eval exp assoscations=
     | Int x-> Int x
     | String name ->
         (
-        match (look_up_frames assoscation_list name) with
-        | Nil -> raise (WrongVariable "association wasnt found")
+        match (look_up_frames procedures name) with
+        | Nil -> 
+          (
+            match (look_up_frames env name) with
+            | Nil -> raise (WrongVariable "association wasnt found")
+            | S_expr (_, value) -> 
+                    Printf.printf "look up result: ";
+                    print_exsprassion value;
+                     value 
+          )
+
         | S_expr(_, value ) -> 
             Printf.printf "look up result: ";
             print_exsprassion value;
@@ -102,22 +111,22 @@ let eval exp assoscations=
         )
     | S_expr( (String "if"), S_expr (conditiion, S_expr (output1, S_expr( output2, Nil) ) )) ->
      (
-      match evaluate conditiion assoscation_list with
-      | String "t" -> evaluate output1 assoscation_list
-      | String "f" -> evaluate output2 assoscation_list
+      match evaluate conditiion env procedures with
+      | String "t" -> evaluate output1 env procedures
+      | String "f" -> evaluate output2 env procedures   
       | _ ->  raise (WrongOperation "Conditiion didn't retune boolean");
       ) 
-    | S_expr( (String "cond"), x )-> eval_cond x assoscation_list 
+    | S_expr( (String "cond"), x )-> eval_cond x env procedures
     
     | S_expr( (String "quote"), S_expr (cond, Nil )) -> cond
     | S_expr ( String "lambda", S_expr ( _, S_expr( _ , Nil))) as lambda_exspression -> lambda_exspression
     | S_expr(String operation, x) -> (
-      match (look_up_frames assoscation_list operation) with
-        | Nil -> apply (String operation) (eval_list x assoscation_list) assoscation_list
+      match (look_up_frames procedures operation) with
+        | Nil -> apply (String operation) (eval_list x env procedures) procedures
         | S_expr (_, value) -> 
-        Printf.printf "Value: ";
-        print_exsprassion value;
-          evaluate (S_expr(value, x)) assoscation_list 
+            Printf.printf "Value: ";
+            print_exsprassion value;
+            evaluate (S_expr(value, x)) env procedures
     ) 
     | S_expr(operation, x) ->  
       Printf.printf "Operation: ";
@@ -125,48 +134,38 @@ let eval exp assoscations=
       Printf.printf "exspression: ";
       print_exsprassion x; 
 
-      apply operation (eval_list x assoscation_list) assoscation_list
+      apply operation (eval_list x env procedures) procedures 
 
-      (* apply operation (eval_list x assoscation_list) assoscation_list *)
-    
 
-(* ((lambda (x y)(+ x y)) 1 2) *)
-
-  and eval_list exp assoscation_list=
-    (* Printf.printf "eval_list: "; *)
-    (* print_exsprassion exp; *)
+  and eval_list (exp: sexpr) (env: sexpr) (procedures: sexpr) : sexpr=
     match exp with
     | Nil -> Nil
-    | S_expr( x , y) -> S_expr (evaluate x assoscation_list, eval_list y assoscation_list)
+    | S_expr( x , y) -> S_expr (evaluate x env procedures, eval_list y env procedures)
     | _ -> raise (WrongVariable "List can not be anything but S_expr") 
     
 
 
-  and eval_cond exp assoscation_list = 
+  and eval_cond (exp: sexpr) (env: sexpr) (procedures: sexpr) : sexpr= 
     (* Printf.printf "eval_cond: "; *)
     (* print_exsprassion exp; *)
     match exp with
     | Nil -> Nil
     | S_expr( S_expr (cond, S_expr (res, Nil)), next) -> 
       (
-      (* Printf.printf "cond -> "; *)
-      (* print_exsprassion_full cond; *)
-      (* Printf.printf "cond -> ";  *)
-      (* print_exsprassion cond; *)
       
-      match (evaluate cond assoscation_list) with
-      | String "t" -> evaluate res assoscation_list
-      | String "f" -> eval_cond next assoscation_list
+      match (evaluate cond env procedures) with
+      | String "t" -> evaluate res env procedures
+      | String "f" -> eval_cond next env procedures
       | _ -> raise (WrongOperation "Conditiion is not true or false")
       )
     | _ -> raise (WrongOperation "Cond should have S_expr inside")
 
-  and apply func exp assoscation_list=
+  
+and apply (func: sexpr) (exp: sexpr) (procedures: sexpr) : sexpr=
 
-    Printf.printf "func: ";
-    print_exsprassion func;
-    Printf.printf "apply: ";
-    print_exsprassion exp;
+    (* Printf.printf "func: "; *)
+    (* print_exsprassion func; *)
+    (* Printf.printf "apply: "; *)
     (* print_exsprassion exp; *)
     match (func, exp) with
     | (String "+", S_expr ((Int x), (S_expr ((Int y), Nil)))) -> 
@@ -190,16 +189,15 @@ let eval exp assoscations=
         Printf.printf "exspression: ";
         print_exsprassion exspression;
         match parameters with
-        | S_expr _ -> evaluate exspression (S_expr ((pair_lis_frames parameters values), assoscation_list ) )
-        | _ -> evaluate exspression (S_expr ((pair_lis_frames (S_expr (parameters, Nil)) values), assoscation_list ) )
+        | S_expr _ -> 
+          evaluate exspression (S_expr ((pair_lis_frames parameters values), Nil ) ) procedures
+        | _ -> 
+          evaluate exspression (S_expr ((pair_lis_frames (S_expr (parameters, Nil)) values), Nil )) procedures
       )
-      (* Printf.printf "this ->"; *)
-      (* print_exsprassion (S_expr ((pair_lis_frames parameters values), assoscation_list )); *)
- 
      | _ -> raise (WrongOperation "Error wrong exp")
 
   in
-  evaluate exp assoscations 
+  evaluate exp environment eval_procedures 
 
 (* (+  ( + 1 2 ) 1) *)
     (* apply(+,[3,1]) *)
@@ -219,7 +217,25 @@ let get_first_string expression =
   | String x -> x
   | _ -> raise (WrongVariable "Exspression should be String")
 
-let rec driver_loop exspression assoscation_list =
+(* let rec driver_loop exspression assoscation_list = *)
+(*   match exspression with *)
+(*   | Nil ->  *)
+(*     Printf.printf "The end =)\n" *)
+(*   | S_expr( S_expr(String "define", S_expr (  name, S_expr ( lambda, Nil ) )) , next) ->  *)
+(*     Printf.printf "Defined %s " (get_first_string name); *)
+(*     print_exsprassion lambda; *)
+(*     driver_loop next (S_expr ( *)
+(*       (pair_lis_frames (S_expr (name, Nil)) (S_expr ( (eval lambda assoscation_list) , Nil)) ),  *)
+(*       assoscation_list ) ) *)
+(*   | S_expr( exp , next) ->  *)
+(*     print_exsprassion (eval exp assoscation_list); *)
+(*     driver_loop next assoscation_list *)
+(**)
+(*   | _ -> raise (WrongVariable "IDK acttualy");; *)
+(**)
+
+
+let rec driver_loop exspression procedures =
   match exspression with
   | Nil -> 
     Printf.printf "The end =)\n"
@@ -227,33 +243,17 @@ let rec driver_loop exspression assoscation_list =
     Printf.printf "Defined %s " (get_first_string name);
     print_exsprassion lambda;
     driver_loop next (S_expr (
-      (pair_lis_frames (S_expr (name, Nil)) (S_expr ( (eval lambda assoscation_list ) , Nil)) ), 
-      assoscation_list ) )
+      (pair_lis_frames (S_expr (name, Nil)) (S_expr ( (eval lambda Nil procedures ) , Nil)) ), 
+      procedures ) )
   | S_expr( exp , next) -> 
-    print_exsprassion (eval exp assoscation_list);
-    driver_loop next assoscation_list
+    print_exsprassion (eval exp Nil procedures);
+    driver_loop next procedures
 
   | _ -> raise (WrongVariable "IDK acttualy");;
 
 
 
-let rec driver_loop exspression assoscation_list =
-  match exspression with
-  | Nil -> 
-    Printf.printf "The end =)\n"
-  | S_expr( S_expr(String "define", S_expr (  name, S_expr ( lambda, Nil ) )) , next) -> 
-    Printf.printf "Defined %s " (get_first_string name);
-    print_exsprassion lambda;
-    driver_loop next (S_expr (
-      (pair_lis_frames (S_expr (name, Nil)) (S_expr ( (eval lambda assoscation_list ) , Nil)) ), 
-      assoscation_list ) )
-  | S_expr( exp , next) -> 
-    print_exsprassion (eval exp assoscation_list);
-    driver_loop next assoscation_list
-
-  | _ -> raise (WrongVariable "IDK acttualy");;
-
-let rec driver_loop_terminal assoscation_list =
+let rec driver_loop_terminal procedures =
   Printf.printf ">> ";
   let expression =
     try 
@@ -261,11 +261,11 @@ let rec driver_loop_terminal assoscation_list =
     with
     | Failure msg -> 
       Printf.printf "Error happened: %s\n" msg;
-      driver_loop_terminal assoscation_list;
+      driver_loop_terminal procedures;
 
     | _ -> 
       Printf.printf "Unknown parsing error\n";
-      driver_loop_terminal assoscation_list 
+      driver_loop_terminal procedures 
   in  
   try 
     match expression with
@@ -274,20 +274,20 @@ let rec driver_loop_terminal assoscation_list =
       Printf.printf "Defined %s " (get_first_string name);
       print_exsprassion lambda;
       driver_loop_terminal (S_expr (
-        (pair_lis_frames (S_expr (name, Nil)) (S_expr ( (eval lambda assoscation_list) , Nil)) ), 
-        assoscation_list ) )
+        (pair_lis_frames (S_expr (name, Nil)) (S_expr ( (eval lambda Nil procedures) , Nil)) ), 
+        procedures ) )
     |  exp  -> 
-      print_exsprassion (eval exp assoscation_list);
-      driver_loop_terminal assoscation_list
+      print_exsprassion (eval exp Nil procedures);
+      driver_loop_terminal procedures 
   with 
   | WrongVariable msg ->
     Printf.printf "Error: %s\n" msg;
-    driver_loop_terminal assoscation_list 
+    driver_loop_terminal procedures 
   | Failure msg ->
     Printf.printf "Error during evaluation: %s\n" msg;
-    driver_loop_terminal assoscation_list 
+    driver_loop_terminal procedures 
   | _ ->
     Printf.printf "Unknown error occurred\n";
-    driver_loop_terminal assoscation_list 
+    driver_loop_terminal procedures 
   (* | _ -> raise (WrongVariable "IDK acttualy");; *)
 
