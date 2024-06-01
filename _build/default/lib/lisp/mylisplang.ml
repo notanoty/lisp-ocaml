@@ -195,78 +195,58 @@ let get_first_string expression =
   | String x -> x
   | _ -> raise (WrongVariable "Exspression should be String")
 
-let rec driver_loop exspression assoscation_list =
-  match exspression with
-  | Nil -> Printf.printf "The end =)\n"
-  | S_expr (S_expr (String "define", S_expr (name, S_expr (lambda, Nil))), next)
-    ->
+let handle_expression (expression : sexpr) (association_list : sexpr) =
+  match expression with
+  | Nil ->
+      Printf.printf "The end =)\n";
+      association_list
+  | S_expr (String "define", S_expr (name, S_expr (lambda, Nil))) ->
       Printf.printf "Defined %s " (get_first_string name);
       print_exsprassion lambda;
-      driver_loop next
-        (S_expr
-           ( pair_lis_frames
-               (S_expr (name, Nil))
-               (S_expr (eval lambda assoscation_list, Nil)),
-             assoscation_list ))
-  | S_expr (exp, next) ->
-      print_exsprassion (eval exp assoscation_list);
-      driver_loop next assoscation_list
-  | _ -> raise (WrongVariable "IDK acttualy")
 
-let rec driver_loop exspression assoscation_list =
-  match exspression with
+      S_expr
+        ( pair_lis_frames
+            (S_expr (name, Nil))
+            (S_expr (eval lambda association_list, Nil)),
+          association_list )
+  | exp ->
+      print_exsprassion (eval exp association_list);
+      association_list
+(* | _ -> raise (WrongVariable "IDK actually") *)
+
+let rec driver_loop expression association_list =
+  match expression with
   | Nil -> Printf.printf "The end =)\n"
-  | S_expr (S_expr (String "define", S_expr (name, S_expr (lambda, Nil))), next)
-    ->
-      Printf.printf "Defined %s " (get_first_string name);
-      print_exsprassion lambda;
-      driver_loop next
-        (S_expr
-           ( pair_lis_frames
-               (S_expr (name, Nil))
-               (S_expr (eval lambda assoscation_list, Nil)),
-             assoscation_list ))
-  | S_expr (exp, next) ->
-      print_exsprassion (eval exp assoscation_list);
-      driver_loop next assoscation_list
-  | _ -> raise (WrongVariable "IDK acttualy")
+  | S_expr (expression, next) ->
+      let updated_association_list =
+        handle_expression expression association_list
+      in
+      driver_loop next updated_association_list
 
-let rec driver_loop_terminal assoscation_list =
+let rec driver_loop_terminal association_list =
   Printf.printf ">> ";
   let expression =
     try parsing (read_line ()) with
     | Failure msg ->
         Printf.printf "Error happened: %s\n" msg;
-        driver_loop_terminal assoscation_list
+        driver_loop_terminal association_list
     | _ ->
         Printf.printf "Unknown parsing error\n";
-        driver_loop_terminal assoscation_list
+        driver_loop_terminal association_list
   in
   try
-    match expression with
-    | Nil ->
-        Printf.printf "The end =)\n";
-        Nil
-    | S_expr (String "define", S_expr (name, S_expr (lambda, Nil))) ->
-        Printf.printf "Defined %s " (get_first_string name);
-        print_exsprassion lambda;
-        driver_loop_terminal
-          (S_expr
-             ( pair_lis_frames
-                 (S_expr (name, Nil))
-                 (S_expr (eval lambda assoscation_list, Nil)),
-               assoscation_list ))
-    | exp ->
-        print_exsprassion (eval exp assoscation_list);
-        driver_loop_terminal assoscation_list
+    let updated_association_list =
+      handle_expression expression association_list
+    in
+    driver_loop_terminal updated_association_list
   with
   | WrongVariable msg ->
       Printf.printf "Error: %s\n" msg;
-      driver_loop_terminal assoscation_list
+      driver_loop_terminal association_list
   | Failure msg ->
       Printf.printf "Error during evaluation: %s\n" msg;
-      driver_loop_terminal assoscation_list
+      driver_loop_terminal association_list
   | _ ->
       Printf.printf "Unknown error occurred\n";
-      driver_loop_terminal assoscation_list
+      driver_loop_terminal association_list
 (* | _ -> raise (WrongVariable "IDK acttualy");; *)

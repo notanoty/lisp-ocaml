@@ -1,0 +1,18 @@
+(* open Language.Rutalg *)
+
+
+(* let test = S_expr (String "+", S_expr (Int 7, S_expr (Int 1, Nil))) *)
+(* let nil_test = S_expr (Nil, Nil) *)
+(* let array = [ 1; 2; 3; 4 ] *)
+(* let example_small_cond = "(cond ( (null (list)) (+ 1 2)) ( t (list 2 3 4 5)) ) " *)
+
+(* let example_big_cond = *)
+(* "( cond ( (null (list  1 2 3 )) (+ 1 1) ) ( (null (list 2 3 )) 5  )  (t (+ 1 \ *)
+   (*    0) ) ) " *)
+
+(* let example_null = "(null (list ) ) " *)
+
+(* let get_contents_from_file = *)
+(*   read_file Sys.argv.(1) *)
+
+
