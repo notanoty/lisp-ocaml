@@ -200,27 +200,35 @@ let rec driver_loop expression association_list =
 let rec driver_loop_terminal association_list =
   Printf.printf ">> ";
   let expression =
-    try parsing (read_line ()) with
-    | Failure msg ->
-        Printf.printf "Error happened: %s\n" msg;
-        driver_loop_terminal association_list
-    | _ ->
-        Printf.printf "Unknown parsing error\n";
-        driver_loop_terminal association_list
+    let input_expression_line = read_line () in
+    if String.equal input_expression_line "exit" then Nil
+    else
+      try parsing input_expression_line with
+      | Failure msg ->
+          Printf.printf "Error happened: %s\n" msg;
+          driver_loop_terminal association_list
+      | _ ->
+          Printf.printf "Unknown parsing error\n";
+          driver_loop_terminal association_list
   in
-  try
-    let updated_association_list =
-      handle_expression expression association_list
-    in
-    driver_loop_terminal updated_association_list
-  with
-  | WrongVariable msg ->
-      Printf.printf "Error: %s\n" msg;
-      driver_loop_terminal association_list
-  | Failure msg ->
-      Printf.printf "Error during evaluation: %s\n" msg;
-      driver_loop_terminal association_list
-  | _ ->
-      Printf.printf "Unknown error occurred\n";
-      driver_loop_terminal association_list
+  match expression with
+  | Nil ->
+      Printf.printf "The end\n";
+      Nil
+  | _ -> (
+      try
+        let updated_association_list =
+          handle_expression expression association_list
+        in
+        driver_loop_terminal updated_association_list
+      with
+      | WrongVariable msg ->
+          Printf.printf "Error: %s\n" msg;
+          driver_loop_terminal association_list
+      | Failure msg ->
+          Printf.printf "Error during evaluation: %s\n" msg;
+          driver_loop_terminal association_list
+      | _ ->
+          Printf.printf "Unknown error occurred\n";
+          driver_loop_terminal association_list)
 (* | _ -> raise (WrongVariable "IDK acttualy");; *)

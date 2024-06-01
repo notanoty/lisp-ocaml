@@ -14,17 +14,6 @@ let get_number : sexpr -> int = function
   | Int x -> x
   | _ -> raise (WrongVariable "Parameter should be of type Int a ")
 
-(* ((lambda (x y)(+ x y)) 1 2) *)
-(* ((x . 1) (y . 2)) *)
-(* (x y) (1 2) *)
-(* (z x y) *)
-(* (3 1 2) *)
-(*   S_expr ( S_expr(S_expr("Z", Nil), S_expr(1, Nil) ),  *)
-(*          *)
-(*         (S_expr ( S_expr( "X", S_expr ("Y",  Nil))), *)
-(*          S_expr(1, S_expr( 2,  Nil)  ) ) ) *)
-(* (  ((z) . (3))  ((x y) . (1 2))  ) *)
-
 let rec pair_lis parameters values =
   match (parameters, values) with
   | Nil, Nil -> Nil
@@ -57,8 +46,6 @@ let look_up_frames_col assoscation_list name =
         else look_up_frames_rec next_parameter next_value
   in
   look_up_frames_rec parameters values
-
-(* (define foo (lambda (x) (+ 1 x))) *)
 
 let look_up_frames assoscation_list name =
   let rec look_up_frames_rec assoscation_list name =
@@ -113,8 +100,6 @@ let eval exp assoscations =
         print_exsprassion x;
 
         apply operation (eval_list x assoscation_list)
-  (* apply operation (eval_list x assoscation_list) assoscation_list *)
-  (* ((lambda (x y)(+ x y)) 1 2) *)
   and eval_list exp assoscation_list =
     (* Printf.printf "eval_list: "; *)
     (* print_exsprassion exp; *)
@@ -179,17 +164,6 @@ let eval exp assoscations =
 
   evaluate exp assoscations
 
-(* (+  ( + 1 2 ) 1) *)
-(* apply(+,[3,1]) *)
-
-(* car, cdr, list, quote, if, cond, cons, null *)
-
-(* (list 1 2 3) *)
-(* (1 2 3) *)
-(* (cond (x y) (z q) ... (f g )) *)
-
-(* (+ ( 2 3) 4)   (apply + ( /6 4)) *)
-
 let get_first_string expression =
   match expression with
   | String x -> x
@@ -226,27 +200,35 @@ let rec driver_loop expression association_list =
 let rec driver_loop_terminal association_list =
   Printf.printf ">> ";
   let expression =
-    try parsing (read_line ()) with
-    | Failure msg ->
-        Printf.printf "Error happened: %s\n" msg;
-        driver_loop_terminal association_list
-    | _ ->
-        Printf.printf "Unknown parsing error\n";
-        driver_loop_terminal association_list
+    let input_expression_line = read_line () in
+    if String.equal input_expression_line "exit" then Nil
+    else
+      try parsing input_expression_line with
+      | Failure msg ->
+          Printf.printf "Error happened: %s\n" msg;
+          driver_loop_terminal association_list
+      | _ ->
+          Printf.printf "Unknown parsing error\n";
+          driver_loop_terminal association_list
   in
-  try
-    let updated_association_list =
-      handle_expression expression association_list
-    in
-    driver_loop_terminal updated_association_list
-  with
-  | WrongVariable msg ->
-      Printf.printf "Error: %s\n" msg;
-      driver_loop_terminal association_list
-  | Failure msg ->
-      Printf.printf "Error during evaluation: %s\n" msg;
-      driver_loop_terminal association_list
-  | _ ->
-      Printf.printf "Unknown error occurred\n";
-      driver_loop_terminal association_list
+  match expression with
+  | Nil ->
+      Printf.printf "The end\n";
+      Nil
+  | _ -> (
+      try
+        let updated_association_list =
+          handle_expression expression association_list
+        in
+        driver_loop_terminal updated_association_list
+      with
+      | WrongVariable msg ->
+          Printf.printf "Error: %s\n" msg;
+          driver_loop_terminal association_list
+      | Failure msg ->
+          Printf.printf "Error during evaluation: %s\n" msg;
+          driver_loop_terminal association_list
+      | _ ->
+          Printf.printf "Unknown error occurred\n";
+          driver_loop_terminal association_list)
 (* | _ -> raise (WrongVariable "IDK acttualy");; *)
