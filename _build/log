@@ -1,10 +1,10 @@
 # dune exec ./bin/main.exe
 # OCAMLPARAM: unset
 # Shared cache: disabled
-# Shared cache location: /home/notanaty/.cache/dune/db
+# Shared cache location: /home/notanoty/.cache/dune/db
 # Workspace root:
-# /home/notanaty/Desktop/programming/ocamlLang/language_lexical_scop
-# Auto-detected concurrency: 8
+# /home/notanoty/Desktop/programming/ocamlLang/language_lexical_scop
+# Auto-detected concurrency: 16
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -12,13 +12,6 @@
 #  ; merlin = true
 #  ; fdo_target_exe = None
 #  ; build_dir = In_build_dir "default"
-#  ; installed_env =
-#      map
-#        { "INSIDE_DUNE" :
-#            "/home/notanaty/Desktop/programming/ocamlLang/language_lexical_scop/_build/default"
-#        ; "OCAML_COLOR" : "always"
-#        ; "OPAMCOLOR" : "always"
-#        }
 #  ; instrument_with = []
 #  }
-$ /home/notanaty/.opam/default/bin/ocamlc.opt -config > /tmp/dune_32dad9_output
+$ /usr/bin/ocamlc.opt -config > /tmp/dune_2dde95_output
