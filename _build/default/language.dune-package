@@ -5,68 +5,15 @@
  (lib
   (META
    dune-package
-   mylisp/mylisplang.a
-   mylisp/mylisplang.cma
-   mylisp/mylisplang.cmi
-   mylisp/mylisplang.cmt
-   mylisp/mylisplang.cmx
-   mylisp/mylisplang.cmxa
-   mylisp/mylisplang.ml
    opam
-   parsing/parsing.a
-   parsing/parsing.cma
-   parsing/parsing.cmi
-   parsing/parsing.cmt
-   parsing/parsing.cmx
-   parsing/parsing.cmxa
-   parsing/parsing.ml
    peano/peano.a
    peano/peano.cma
    peano/peano.cmi
    peano/peano.cmt
    peano/peano.cmx
    peano/peano.cmxa
-   peano/peano.ml
-   tokenize/tokenize.a
-   tokenize/tokenize.cma
-   tokenize/tokenize.cmi
-   tokenize/tokenize.cmt
-   tokenize/tokenize.cmx
-   tokenize/tokenize.cmxa
-   tokenize/tokenize.ml))
- (libexec
-  (mylisp/mylisplang.cmxs
-   parsing/parsing.cmxs
-   peano/peano.cmxs
-   tokenize/tokenize.cmxs)))
-(library
- (name language.mylisp)
- (kind normal)
- (archives (byte mylisp/mylisplang.cma) (native mylisp/mylisplang.cmxa))
- (plugins (byte mylisp/mylisplang.cma) (native mylisp/mylisplang.cmxs))
- (native_archives mylisp/mylisplang.a)
- (requires language.peano language.tokenize language.parsing)
- (main_module_name Mylisplang)
- (modes byte native)
- (modules
-  (singleton
-   (obj_name mylisplang)
-   (visibility public)
-   (source (path Mylisplang) (impl (path mylisp/mylisplang.ml))))))
-(library
- (name language.parsing)
- (kind normal)
- (archives (byte parsing/parsing.cma) (native parsing/parsing.cmxa))
- (plugins (byte parsing/parsing.cma) (native parsing/parsing.cmxs))
- (native_archives parsing/parsing.a)
- (requires language.peano language.tokenize)
- (main_module_name Parsing)
- (modes byte native)
- (modules
-  (singleton
-   (obj_name parsing)
-   (visibility public)
-   (source (path Parsing) (impl (path parsing/parsing.ml))))))
+   peano/peano.ml))
+ (libexec (peano/peano.cmxs)))
 (library
  (name language.peano)
  (kind normal)
@@ -80,16 +27,3 @@
    (obj_name peano)
    (visibility public)
    (source (path Peano) (impl (path peano/peano.ml))))))
-(library
- (name language.tokenize)
- (kind normal)
- (archives (byte tokenize/tokenize.cma) (native tokenize/tokenize.cmxa))
- (plugins (byte tokenize/tokenize.cma) (native tokenize/tokenize.cmxs))
- (native_archives tokenize/tokenize.a)
- (main_module_name Tokenize)
- (modes byte native)
- (modules
-  (singleton
-   (obj_name tokenize)
-   (visibility public)
-   (source (path Tokenize) (impl (path tokenize/tokenize.ml))))))
