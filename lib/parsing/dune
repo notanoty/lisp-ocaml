@@ -1,5 +1,0 @@
-(library
- (name parsing)
- (public_name language.parsing)
- (libraries peano tokenize) )
-

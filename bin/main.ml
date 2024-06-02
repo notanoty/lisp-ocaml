@@ -1,49 +1,42 @@
+[@@@ocaml.warning "-8"]
 [@@@ocaml.warning "-32"]
 [@@@ocaml.warning "-33"]
 
 open Peano
-open Tokenize 
-open Parsing 
-open Mylisplang
+open Tokenize
 
-let dir_location = "codefolder/"
+(* open Parsing *)
+(* open Mylisplang *)
 
-let file_standard = "testcode.ls"
-(* open Language.Rutalg *)
-(* exception Error of string *)
+(* let exmple = ref (SS_expr (SInt (ref 1), SNil)) *)
+let int_expr = SInt { value = 42 }
+let string_expr = SString { value = "hello" }
+let s_expr = S_expr { current = int_expr; next = string_expr }
+let closure_expr = Closure { env = Nil; code = s_expr }
 
-let rec conc ls1 ls2 = 
-  match (ls1, ls2) with
-  | ([], ls2) -> ls2
-  | ( (head :: tail), ls2 ) -> head ::(  conc tail  (ls2) )
+let () =
+  match s_expr with S_expr v -> v.current <- SInt { value = 50 } | _ -> ()
+;;
 
-let read_file file =
-  In_channel.with_open_bin file In_channel.input_all
+(* s_expr.current <- string_expr;; *)
 
-let test = S_expr ((String "+"), (S_expr ((Int 7), (S_expr (Int 1, Nil) )) ));;  
+(* let modify_current s_expr = *)
+(*   match s_expr with *)
+(*   | S_expr { current; next = _ } -> current := SInt { value = 22 } *)
+(*   | _ -> () (* Modifying mutable fields *) *)
 
-let nil_test = S_expr ( Nil, Nil);; 
+(* let () = match int_expr with SInt v -> v.value <- 43 | _ -> ();; *)
 
-let array = [1;2;3;4];;
-let example_small_cond = "(cond ( (null (list)) (+ 1 2)) ( t (list 2 3 4 5)) ) " ;;  
-let example_big_cond = "( cond ( (null (list  1 2 3 )) (+ 1 1) ) ( (null (list 2 3 )) 5  )  (t (+ 1 0) ) ) ";;  
-let example_null = "(null (list ) ) " ;; 
- 
+print_exsprassion s_expr;;
+print_exsprassion_full s_expr;;
+Printf.printf "(%s)\n" (exp_to_string s_expr);;
+Printf.printf "len %d\n" (get_exspression_length s_expr)
 
-let get_contents_from_file = 
-  (* Printf.printf "Number of arguments: %d\n" (Array.length Sys.argv - 1); *)
-  read_file ( dir_location ^ if Array.length Sys.argv - 1 == 0 then file_standard else Sys.argv.(1))
-
-let () = 
-  if(Array.length Sys.argv - 1 > 0 ) then
-    (
-    let contents = "(" ^ get_contents_from_file ^ ")" in
-    (* Printf.printf  "%s\n" contents; *)
-    let parsing_result = parsing contents in
-    driver_loop parsing_result Nil
-    )
-  else ignore(driver_loop_terminal Nil);;
-
-(* let example = "( (lambda (x y) ( + ((lambda (x y) (+ x y) ) 1 2 ) (+ x y) ) ) (+ 3 1) 4)" in *)
-   (* let  a = parsing example in *)
-    (* print_exsprassion (eval a); *)
+(* let () = *)
+(*   if Array.length Sys.argv == 2 then ( *)
+(*     let read_file file = In_channel.with_open_bin file In_channel.input_all in *)
+(*     let contents = "(" ^ read_file Sys.argv.(1) ^ ")" in *)
+(*     let parsing_result = parsing contents in *)
+(*     print_exsprassion parsing_result; *)
+(*     driver_loop parsing_result Nil) *)
+(*   else ignore (driver_loop_terminal Nil) *)

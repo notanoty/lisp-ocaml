@@ -1,21 +1,3 @@
-package "mylisp" (
-  directory = "mylisp"
-  description = ""
-  requires = "language.parsing language.peano language.tokenize"
-  archive(byte) = "mylisplang.cma"
-  archive(native) = "mylisplang.cmxa"
-  plugin(byte) = "mylisplang.cma"
-  plugin(native) = "mylisplang.cmxs"
-)
-package "parsing" (
-  directory = "parsing"
-  description = ""
-  requires = "language.peano language.tokenize"
-  archive(byte) = "parsing.cma"
-  archive(native) = "parsing.cmxa"
-  plugin(byte) = "parsing.cma"
-  plugin(native) = "parsing.cmxs"
-)
 package "peano" (
   directory = "peano"
   description = ""
@@ -24,13 +6,4 @@ package "peano" (
   archive(native) = "peano.cmxa"
   plugin(byte) = "peano.cma"
   plugin(native) = "peano.cmxs"
-)
-package "tokenize" (
-  directory = "tokenize"
-  description = ""
-  requires = ""
-  archive(byte) = "tokenize.cma"
-  archive(native) = "tokenize.cmxa"
-  plugin(byte) = "tokenize.cma"
-  plugin(native) = "tokenize.cmxs"
 )

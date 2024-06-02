@@ -1,3 +1,4 @@
 (executable
  (name main)
- (libraries mylisplang parsing peano tokenize ))
+ (libraries peano  tokenize))
+ ; mylisplang parsing  
