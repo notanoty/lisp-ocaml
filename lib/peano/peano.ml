@@ -1,12 +1,12 @@
 (* [@@@ocaml.warning "-8"] *)
 type peano_number = Zero | Successor of peano_number
 
-type sexpr =
-  | Nil
-  | Int of int
-  | String of string
-  | S_expr of sexpr * sexpr
-  | Closure of sexpr * sexpr
+(* type sexpr = *)
+(*   | Nil *)
+(*   | Int of int *)
+(*   | String of string *)
+(*   | S_expr of sexpr * sexpr *)
+(*   | Closure of sexpr * sexpr *)
 
 type s_expression =
   | Nil
@@ -16,17 +16,7 @@ type s_expression =
   | Closure of { mutable env : s_expression; mutable code : s_expression }
 
 let example = S_expr { current = SString { value = "aa" }; next = Nil }
-(*
-let exp =
-  ref (S_expr
-    ( ref (S_expr ( ref (Int 10), ref (S_expr ( ref (String "test"), ref( Int 1))))),
-      ref (S_expr ( ref (String "aaaa"), ref (Int 44))) )) *)
 
-(* let test = S_expr (String "+", S_expr (Int 1, Int 1)) *)
-
-(* поддержка под выражений  *)
-
-(* (1 2 3 4) (1 . (2 . (3 . (4 . nil)))) *)
 let print_exsprassion (exsprassion : s_expression) =
   let rec print_exp_par = function
     | Nil -> Printf.printf "Nil"

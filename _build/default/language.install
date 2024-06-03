@@ -1,7 +1,21 @@
 lib: [
   "_build/install/default/lib/language/META"
   "_build/install/default/lib/language/dune-package"
+  "_build/install/default/lib/language/mylisp/mylisplang.a" {"mylisp/mylisplang.a"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cma" {"mylisp/mylisplang.cma"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cmi" {"mylisp/mylisplang.cmi"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cmt" {"mylisp/mylisplang.cmt"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cmx" {"mylisp/mylisplang.cmx"}
+  "_build/install/default/lib/language/mylisp/mylisplang.cmxa" {"mylisp/mylisplang.cmxa"}
+  "_build/install/default/lib/language/mylisp/mylisplang.ml" {"mylisp/mylisplang.ml"}
   "_build/install/default/lib/language/opam"
+  "_build/install/default/lib/language/parsing/parsing.a" {"parsing/parsing.a"}
+  "_build/install/default/lib/language/parsing/parsing.cma" {"parsing/parsing.cma"}
+  "_build/install/default/lib/language/parsing/parsing.cmi" {"parsing/parsing.cmi"}
+  "_build/install/default/lib/language/parsing/parsing.cmt" {"parsing/parsing.cmt"}
+  "_build/install/default/lib/language/parsing/parsing.cmx" {"parsing/parsing.cmx"}
+  "_build/install/default/lib/language/parsing/parsing.cmxa" {"parsing/parsing.cmxa"}
+  "_build/install/default/lib/language/parsing/parsing.ml" {"parsing/parsing.ml"}
   "_build/install/default/lib/language/peano/peano.a" {"peano/peano.a"}
   "_build/install/default/lib/language/peano/peano.cma" {"peano/peano.cma"}
   "_build/install/default/lib/language/peano/peano.cmi" {"peano/peano.cmi"}
@@ -9,7 +23,17 @@ lib: [
   "_build/install/default/lib/language/peano/peano.cmx" {"peano/peano.cmx"}
   "_build/install/default/lib/language/peano/peano.cmxa" {"peano/peano.cmxa"}
   "_build/install/default/lib/language/peano/peano.ml" {"peano/peano.ml"}
+  "_build/install/default/lib/language/tokenize/tokenize.a" {"tokenize/tokenize.a"}
+  "_build/install/default/lib/language/tokenize/tokenize.cma" {"tokenize/tokenize.cma"}
+  "_build/install/default/lib/language/tokenize/tokenize.cmi" {"tokenize/tokenize.cmi"}
+  "_build/install/default/lib/language/tokenize/tokenize.cmt" {"tokenize/tokenize.cmt"}
+  "_build/install/default/lib/language/tokenize/tokenize.cmx" {"tokenize/tokenize.cmx"}
+  "_build/install/default/lib/language/tokenize/tokenize.cmxa" {"tokenize/tokenize.cmxa"}
+  "_build/install/default/lib/language/tokenize/tokenize.ml" {"tokenize/tokenize.ml"}
 ]
 libexec: [
+  "_build/install/default/lib/language/mylisp/mylisplang.cmxs" {"mylisp/mylisplang.cmxs"}
+  "_build/install/default/lib/language/parsing/parsing.cmxs" {"parsing/parsing.cmxs"}
   "_build/install/default/lib/language/peano/peano.cmxs" {"peano/peano.cmxs"}
+  "_build/install/default/lib/language/tokenize/tokenize.cmxs" {"tokenize/tokenize.cmxs"}
 ]
