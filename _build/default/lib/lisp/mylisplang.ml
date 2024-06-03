@@ -52,12 +52,14 @@ let rec look_up (association_list : s_expression) (name : string) : s_expression
       else look_up next name
   | _ -> raise (Failure "Something went wrong")
 
-let pair_lis_frames parameters values =
+let pair_lis_frames (parameters : s_expression) (values : s_expression) :
+    s_expression =
   if get_exspression_length parameters == get_exspression_length values then
     S_expr { current = parameters; next = values }
   else raise (WrongVariable "Parameters and Values should be the same length")
 
-let look_up_frames_col assoscation_list name =
+let look_up_frames_col (assoscation_list : s_expression) (name : string) :
+    s_expression =
   let (S_expr { current = parameters; next = values }) = assoscation_list in
 
   let rec look_up_frames_rec parameters values =
@@ -72,7 +74,8 @@ let look_up_frames_col assoscation_list name =
   in
   look_up_frames_rec parameters values
 
-let look_up_frames assoscation_list name =
+let look_up_frames (assoscation_list : s_expression) (name : string) :
+    s_expression =
   let rec look_up_frames_rec assoscation_list name =
     match assoscation_list with
     | Nil -> Nil (* raise (WrongVariable "This parameter does not exist") *)
@@ -83,9 +86,10 @@ let look_up_frames assoscation_list name =
   in
   look_up_frames_rec assoscation_list name
 
-let eval exp assoscations =
+let eval (exp : s_expression) (assoscations : s_expression) : s_expression =
   (* print_exsprassion exp; *)
-  let rec evaluate exp association_list =
+  let rec evaluate (exp : s_expression) (association_list : s_expression) :
+      s_expression =
     Printf.printf "evaluate: ";
     print_exsprassion exp;
     match exp with
@@ -147,7 +151,8 @@ let eval exp assoscations =
         Printf.printf "expression: ";
         print_exsprassion x;
         apply operation (eval_list x association_list)
-  and eval_list exp association_list =
+  and eval_list (exp : s_expression) (association_list : s_expression) :
+      s_expression =
     match exp with
     | Nil -> Nil
     | S_expr { current = x; next = y } ->
@@ -157,7 +162,8 @@ let eval exp assoscations =
             next = eval_list y association_list;
           }
     | _ -> raise (Failure "List can not be anything but S_expr")
-  and eval_cond exp association_list =
+  and eval_cond (exp : s_expression) (association_list : s_expression) :
+      s_expression =
     match exp with
     | Nil -> Nil
     | S_expr
@@ -172,7 +178,7 @@ let eval exp assoscations =
         | SString { value = "f" } -> eval_cond next association_list
         | _ -> raise (Failure "Condition is not true or false"))
     | _ -> raise (Failure "Cond should have S_expr inside")
-  and apply func exp =
+  and apply (func : s_expression) (exp : s_expression) : s_expression =
     Printf.printf "func: ";
     print_exsprassion func;
     Printf.printf "apply: ";
@@ -295,7 +301,8 @@ let handle_expression (expression : s_expression)
       association_list
 (* | _ -> raise (WrongVariable "IDK actually") *)
 
-let rec driver_loop expression association_list =
+let rec driver_loop (expression : s_expression)
+    (association_list : s_expression) : unit =
   match expression with
   | Nil -> Printf.printf "The end =)\n"
   | S_expr { current = expression; next } ->
@@ -304,7 +311,7 @@ let rec driver_loop expression association_list =
       in
       driver_loop next updated_association_list
 
-let rec driver_loop_terminal association_list =
+let rec driver_loop_terminal (association_list : s_expression) : s_expression =
   Printf.printf ">> ";
   let expression =
     let input_expression_line = read_line () in

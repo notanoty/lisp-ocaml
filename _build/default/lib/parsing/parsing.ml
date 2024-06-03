@@ -5,7 +5,7 @@ exception WrongVariable of string
 exception LispError of string
 
 (* open Language.Rutalg *)
-let find_max_int current_expr =
+let find_max_int (current_expr : int list) : int =
   let rec find_max list max =
     match list with
     | [] -> 0
@@ -14,10 +14,11 @@ let find_max_int current_expr =
   in
   find_max current_expr 0
 
-let string_to_sexpr str = list_string_to_exp (tokenize str)
+let string_to_sexpr (str : string) : s_expression =
+  list_string_to_exp (tokenize str)
 
-let print_list lst =
-  List.iter (fun x -> Printf.printf "%d " x) lst;
+let print_list (list_arg : int list) : unit =
+  List.iter (fun x -> Printf.printf "%d " x) list_arg;
   print_endline ""
 
 let rutal_original (list_args : string list) : int list =
@@ -32,7 +33,7 @@ let rutal_original (list_args : string list) : int list =
   in
   rutishauser_algorithm 0 0
 
-let rutal (list_args : string list) =
+let rutal (list_args : string list) : int list =
   let len = List.length list_args in
   let rec rutishauser_algorithm i depth =
     if i >= len then []
@@ -44,26 +45,14 @@ let rutal (list_args : string list) =
   in
   rutishauser_algorithm 0 0
 
-let strint_to_expr_int = function
+let strint_to_expr_int : s_expression -> s_expression = function
   | SString { value = s } -> (
       match int_of_string_opt s with
       | Some i -> SInt { value = i }
       | None -> SString { value = s })
   | x -> x
 
-(* ((x . 1) (y . 2)) *)
-(* lookup z ->?  *)
-(* EAFP *)
-(*     d={'x':1,'y':2} *)
-(* try: *)
-(*     d['z'] *)
-(* except KeyError: ... *)
-(* LBYL *)
-(* if 'z' in d:  *)
-(*         d['z'] *)
-(* else: ... *)
-
-let reverse_expression2 exp =
+let reverse_expression (exp : s_expression) : s_expression =
   let rec rev exspression new_expr =
     match exspression with
     | Nil -> new_expr
@@ -78,21 +67,20 @@ let reverse_expression2 exp =
 
 let rec build_list current_expr current_depths expr_accumulator
     depth_accumulator new_expr max_depth =
-  (* Printf.printf "build_list - "; *)
-  (* print_exsprassion_full current_expr; *)
   match (current_expr, current_depths) with
   | _, [] -> raise (LispError "Parenthesis are not closed")
   | ( S_expr { current = head_expr; next = tail_expr },
       current_depth :: tail_depths ) ->
       if current_depth = max_depth then
-        (tail_expr, reverse_expression2 new_expr, -1 :: tail_depths)
+        (tail_expr, reverse_expression new_expr, -1 :: tail_depths)
       else
         build_list tail_expr tail_depths expr_accumulator depth_accumulator
           (S_expr { current = head_expr; next = new_expr })
           max_depth
   | _ -> raise (WrongVariable "This expression cannot be supported")
 
-let parsing_par expression_list list_depth =
+let parsing_par (expression_list : s_expression) (list_depth : int list) :
+    s_expression * int list =
   let max_depth = find_max_int list_depth in
   let rec build_expression current_expr current_depths expr_accumulator
       depth_accumulator =
@@ -124,7 +112,7 @@ let parsing_par expression_list list_depth =
 
   build_expression expression_list list_depth Nil []
 
-let parsing exspression =
+let parsing (exspression : string) : s_expression =
   let depth_list = rutal (tokenize exspression) in
   let rec parsing_rec expression_list list_depth =
     (* print_exsprassion expression_list; *)
