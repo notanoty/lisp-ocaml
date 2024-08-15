@@ -8,6 +8,12 @@ type peano_number = Zero | Successor of peano_number
 (*   | S_expr of sexpr * sexpr *)
 (*   | Closure of sexpr * sexpr *)
 
+(* (let ((x 42)) (progn (setq x (+ 1 x)) x)) *)
+
+(* (let ((x (list 4 2))) *)
+(* (progn (rplaca x 666) x))       -> (666 2) *)
+(* (rplacd x (list 6 7))    -> (4 6 7) *)
+
 type s_expression =
   | Nil
   | SInt of { mutable value : int }

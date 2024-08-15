@@ -86,6 +86,20 @@ let look_up_frames (assoscation_list : s_expression) (name : string) :
   in
   look_up_frames_rec assoscation_list name
 
+let rplaca (expr : s_expression) (new_expr : s_expression) : s_expression =
+  match expr with
+  | S_expr element ->
+      element.current <- new_expr;
+      new_expr
+  | _ -> raise (WrongVariable " modifying mutable fields")
+
+let rplacd (expr : s_expression) (new_expr : s_expression) : s_expression =
+  match expr with
+  | S_expr element ->
+      element.next <- new_expr;
+      new_expr
+  | _ -> raise (WrongVariable " modifying mutable fields")
+
 let eval (exp : s_expression) (assoscations : s_expression) : s_expression =
   (* print_exsprassion exp; *)
   let rec evaluate (exp : s_expression) (association_list : s_expression) :
@@ -262,9 +276,22 @@ let eval (exp : s_expression) (assoscations : s_expression) : s_expression =
                        values;
                    next = new_association_list;
                  }))
+    | ( SString { value = "rplaca" },
+        S_expr
+          { current = variable; next = S_expr { current = value; next = Nil } }
+      ) ->
+        rplaca variable value
+    | ( SString { value = "rplacd" },
+        S_expr
+          { current = variable; next = S_expr { current = value; next = Nil } }
+      ) ->
+        rplacd variable value
     | _ -> raise (Failure "Error wrong exp")
   in
 
+  (* (let ((x (list 4 2))) *)
+  (* (progn (rplaca x 666) x))       -> (666 2) *)
+  (* (rplacd x (list 6 7))    -> (4 6 7) *)
   evaluate exp assoscations
 
 let get_first_string (expression : s_expression) : string =
@@ -345,4 +372,3 @@ let rec driver_loop_terminal (association_list : s_expression) : s_expression =
       | _ ->
           Printf.printf "Unknown error occurred\n";
           driver_loop_terminal association_list)
-(* | _ -> raise (WrongVariable "IDK acttualy");; *)
